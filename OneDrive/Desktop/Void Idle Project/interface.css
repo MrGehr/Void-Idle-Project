@@ -1,0 +1,106 @@
+/* interface.css */
+html, body {
+    height: 100%; /* Ensure the html and body take up the full height of the viewport */
+    margin: 0;    /* Remove default margins */
+    display: flex;
+    flex-direction: column;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #090a0e;
+    color: #6506e2be;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    -webkit-font-smoothing: antialiased; /* Smooth font edges */
+    -moz-osx-font-smoothing: grayscale; /* Optimize for macOS */
+}
+
+header {
+    margin-bottom: 20px;
+}
+
+#generator-tab {
+    padding: 20px;
+    border: 2px solid #ccc;
+    background-color: #f9f9f9;
+}
+
+main {
+    flex: 1; /* Make the main content take up all available space */
+}
+
+.section-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 20px;
+    width: 100%;
+    overflow-y: auto;
+}
+
+section {
+    display: flex;
+    flex-direction: column;      /* Stack content inside each section */
+    align-items: center;         /* Center content horizontally */
+    justify-content: flex-start; /* Align content to the top */
+    padding: 10px;
+    background-color: #3a3f47;   /* Optional: Add a background for better visibility */
+    border-radius: 8px;          /* Optional: Add rounded corners */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Optional: Add a shadow for better visuals */
+    min-width: 150px;            /* Ensure sections have a consistent minimum width */
+    max-width: 200px;            /* Prevent sections from becoming too wide */
+    height: 150px;               /* Set a fixed height for all sections */
+
+    /* Text styles */
+    color: #6506e2; /* Bright white text for better contrast */
+    font-size: 16px; /* Slightly larger font size */
+    font-weight: 500; /* Medium font weight for better readability */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8); /* Add a subtle shadow for clarity */
+    -webkit-font-smoothing: antialiased; /* Smooth font edges */
+    -moz-osx-font-smoothing: grayscale; /* Optimize for macOS */
+}
+
+section p {
+    line-height: 1.5; /* Add spacing between lines */
+}
+
+footer {
+    text-align: center;
+    padding: 10px;
+    background-color: #3a3f47; /* Optional: Match the theme */
+    color: white;
+}
+
+.title-image {
+    max-width: 175px; /* Set a maximum width for the image */
+    height: auto;     /* Maintain the aspect ratio */
+    display: block;   /* Center the image if needed */
+    margin: 0 auto;   /* Center the image horizontally */
+}
+
+nav {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+nav button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: 2px solid #6506e2;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+}
+
+nav button:hover {
+    background-color: #ddd;
+}

@@ -53,3 +53,15 @@ function loadGame() {
     }
 }
 
+let name = "";
+    do {
+        name = prompt("Enter your character's name (no duplicates allowed):");
+        if (!name) {
+            alert("Name cannot be empty. Please try again.");
+        } else if (!isNameValid(name)) {
+            alert("This name is already taken. Please choose a different name.");
+        }
+    } while (!name || !isNameValid(name));
+
+    saveName(name);
+    alert(`Welcome, ${name}! Your character has been created.`);

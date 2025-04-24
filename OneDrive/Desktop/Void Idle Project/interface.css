@@ -13,21 +13,25 @@ body {
     height: 100vh;
     margin: 0;
     background-color: #090a0e;
-    color: #6506e2be;
+    color: #8c3cf5d2;
     font-family: Arial, sans-serif;
     text-align: center;
     -webkit-font-smoothing: antialiased; /* Smooth font edges */
     -moz-osx-font-smoothing: grayscale; /* Optimize for macOS */
+    touch-action: manipulation; /* Add touch-action for better touch interaction */
+    width: 100%; /* Ensure full width */
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    position: relative; /* Set relative positioning */
 }
 
 header {
     margin-bottom: 20px;
 }
 
-#generator-tab {
-    padding: 20px;
-    border: 2px solid #ccc;
-    background-color: #f9f9f9;
+#nodes-tab {
+    padding: 21px;
+    border: 2px solid #8c3cf5d2;
+    background-color: #090a0e;
 }
 
 main {
@@ -40,7 +44,7 @@ main {
     flex-wrap: wrap;
     justify-content: center;
     align-items: flex-start;
-    gap: 20px;
+    gap: 10px;
     width: 100%;
     overflow-y: auto;
 }
@@ -51,18 +55,19 @@ section {
     align-items: center;         /* Center content horizontally */
     justify-content: flex-start; /* Align content to the top */
     padding: 10px;
-    background-color: #3a3f47;   /* Optional: Add a background for better visibility */
+    background-color: #090a0e;   /* Optional: Add a background for better visibility */
     border-radius: 8px;          /* Optional: Add rounded corners */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Optional: Add a shadow for better visuals */
-    min-width: 150px;            /* Ensure sections have a consistent minimum width */
+    min-width: 0px;            /* Ensure sections have a consistent minimum width */
     max-width: 200px;            /* Prevent sections from becoming too wide */
     height: 150px;               /* Set a fixed height for all sections */
 
     /* Text styles */
-    color: #6506e2; /* Bright white text for better contrast */
-    font-size: 16px; /* Slightly larger font size */
-    font-weight: 500; /* Medium font weight for better readability */
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8); /* Add a subtle shadow for clarity */
+    color: #e0e0e0; /* Softer light gray for better contrast */
+    font-size: 16px; /* Slightly larger font size for readability */
+    font-family: 'Arial', sans-serif; /* Use a clean sans-serif font */
+    font-weight: 300; /* Normal font weight for better legibility */
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.514); /* Subtle shadow for clarity */
     -webkit-font-smoothing: antialiased; /* Smooth font edges */
     -moz-osx-font-smoothing: grayscale; /* Optimize for macOS */
 }
@@ -73,8 +78,8 @@ section p {
 
 footer {
     text-align: center;
-    padding: 10px;
-    background-color: #3a3f47; /* Optional: Match the theme */
+    font-size: 10px;
+    background-color: #090a0e; /* Optional: Match the theme */
     color: white;
 }
 
@@ -93,14 +98,42 @@ nav {
 }
 
 nav button {
-    padding: 10px 20px;
+    padding-top: 10px 20px;
     font-size: 16px;
     cursor: pointer;
-    border: 2px solid #6506e2;
+    border: 2px solid #8c3cf5d2;
     background-color: #f0f0f0;
     border-radius: 5px;
 }
 
 nav button:hover {
-    background-color: #ddd;
+    background-color: #cec9c9;
 }
+
+/* Add styles for the buy buttons*/
+.buy-button {
+    padding-top: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: 2px solid #8c3cf5d2;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+}
+.buy-button:hover {
+    background-color: #cec9c9;
+}
+
+button[onclick="prestige()"] {
+    padding-top: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: 2px solid #8c3cf5d2;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+}
+
+button[onclick="prestige()"]:hover {
+    background-color: #cec9c9;
+}
+
+

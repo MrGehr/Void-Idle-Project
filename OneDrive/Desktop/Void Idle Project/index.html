@@ -1,90 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Void Idle</title>
-    <link rel="stylesheet" type="text/css" href="interface.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Void Idle</title>
+  <link rel="stylesheet" href="css/interface.css?v=2" />
+
+  <!-- Load break_infinity.js first -->
+  <script src="https://cdn.jsdelivr.net/npm/break_infinity.js@2" defer></script>
 </head>
 <body>
-    <header>
-        <h1>
-            <img src="title/void_idle_title.png" alt="Void Idle Title" class="title-image">
-        </h1>
-    </header>
+  <header>
+    <h1>
+      <img src="Assets/Title/new title.png" alt="Void Idle Title" class="title-image" />
+    </h1>
+  </header>
 
-    <nav>
-        <button onclick="changePage('home')">Home</button>
-        <button onclick="changePage('nodes')">Nodes</button>
-        <button onclick="changePage('upgrades')">Upgrades</button>
-        <button onclick="changePage('stats')">Stats</button>
-        <button onclick="changePage('prestige')">Prestige</button>
-        <button onclick="changePage('achievements')">Achievements</button>
-    </nav>
+  <nav>
+    <button onclick="changePage('home')">Home</button>
+    <button onclick="changePage('nodes')">Nodes</button>
+    <button onclick="changePage('upgrades')">Upgrades</button>
+    <button onclick="changePage('automation')">Automation</button>
+    <button onclick="changePage('prestige')">Prestige</button>
+    <button onclick="changePage('stats')">Stats</button>
+    <button onclick="changePage('achievements')">Achievements</button>
+    <button onclick="changePage('leaderboard')">Leaderboard</button>
+    <button onclick="changePage('settings')">Settings</button>
+    
+  </nav>
 
-    <main id="content">
-        <div id="generator-tab">
-            <div class="section-container">
-                <section>
-                    <button class="buy-button" onclick="voidenergyClick(1)">Click To Generate</button>
-                    <p>Void Energy: <span id="voidenergy">0</span></p>
-                    <p>Void Energy per Second: <span id="veps">0</span></p>
-                    <p>Void Energy per Tick: <span id="VEPT">0</span></p>
-                </section>
+  <main id="content">
+    <!-- Content will be dynamically loaded here -->
+  </main>
 
-                <section>
-                    <button class="buy-button" onclick="buyabyssalshard()">Buy Abyssal Shard</button>
-                    <p>Abyssal Shard: <span id="abyssalshard">0</span></p>
-                    <p>Abyssal Shard Cost: <span id="abyssalshardCost">10</span></p>
-                </section>
+  <footer>
+    <p>&copy;
+      <script>
+        document.write(new Date().getFullYear());
+      </script> VoidByte Studio. All rights reserved.
+    </p>
+  </footer>
 
-                <section>
-                    <button class="buy-button" onclick="buyWhisperengine()">Buy Whisper Engine</button>
-                    <p>Whisper Engine: <span id="whisperengine">0</span></p>
-                    <p>Whisper Engine Cost: <span id="whisperengineCost">100</span></p>
-                </section>
-
-                <section>
-                    <button class="buy-button" onclick="buydarkmatterloop()">Buy Dark Matter Loop</button>
-                    <p>Dark Matter Loop: <span id="darkmatterloop">0</span></p>
-                    <p>Dark Matter Loop Cost: <span id="darkmatterloopCost">1,000</span></p>
-                </section>
-
-                <section>
-                    <button class="buy-button" onclick="buyvoidbloom()">Buy Void Bloom</button>
-                    <p>Void Bloom: <span id="voidbloom">0</span></p>
-                    <p>Void Bloom Cost: <span id="voidbloomCost">25,000</span></p>
-                </section>
-
-                <section>
-                    <button class="buy-button" onclick="buygravitonseeder()">Buy Graviton Seeder</button>
-                    <p>Graviton Seeder: <span id="gravitonseeder">0</span></p>
-                    <p>Graviton Seeder Cost: <span id="gravitonseederCost">500,000</span></p>
-                </section>
-
-                <section>
-                    <button class="buy-button" onclick="buynullbeacon()">Buy Null Beacon</button>
-                    <p>Null Beacon: <span id="nullbeacon">0</span></p>
-                    <p>Null Beacon Cost: <span id="nullbeaconCost">750M</span></p>
-                </section>
-
-                <section>
-                    <button class="buy-button" onclick="buyoblivionspire()">Buy Oblivion Spire</button>
-                    <p>Oblivion Spire: <span id="oblivionspire">0</span></p>
-                    <p>Oblivion Spire Cost: <span id="oblivionspireCost">1.25T</span></p>
-                </section>
-            </div>
-        </div>
-    </main>
-    <footer>
-        <p>&copy;
-            <script type="text/javascript">
-                const currentYear = new Date().getFullYear();
-                document.write(currentYear);
-            </script> VoidByte Studio. All rights reserved.
-        </p>
-    </footer>
-
-    <script src="main.js"></script>
+  <!-- LOAD ORDER MATTERS: load your modules AFTER break_infinity -->
+  <script src="js/main.js" defer></script>
+  <script src="js/nodes.js" defer></script>
+  <script src="js/upgrades.js" defer></script>
+  <script src="js/prestige.js" defer></script>
+  <script src="js/stats.js" defer></script>
+  <script src="js/achievements.js" defer></script>
+  <script src="js/settings.js" defer></script>
 </body>
 </html>

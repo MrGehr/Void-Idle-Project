@@ -4,7 +4,25 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Void Idle</title>
-  <link rel="stylesheet" href="css/interface.css?v=2" />
+
+  <!-- New sci-fi font -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Main interface styles -->
+  <link rel="stylesheet" href="css/interface.css?v=3" />
+
+  <!-- Home page styles -->
+  <link rel="stylesheet" href="css/home.css" />
+
+  <!-- Nodes page styles -->
+  <link rel="stylesheet" href="css/nodes.css">
+
+  <!-- Settings page styles-->
+  <link rel="stylesheet" href="css/settings.css">
+
 
   <!-- Load break_infinity.js first -->
   <script src="https://cdn.jsdelivr.net/npm/break_infinity.js@2" defer></script>
@@ -12,7 +30,11 @@
 <body>
   <header>
     <h1>
-      <img src="Assets/Title/new title.png" alt="Void Idle Title" class="title-image" />
+      <img
+        src="Assets/Title/new title.png"
+        alt="Void Idle Title"
+        class="title-image"
+      />
     </h1>
   </header>
 
@@ -26,7 +48,6 @@
     <button onclick="changePage('achievements')">Achievements</button>
     <button onclick="changePage('leaderboard')">Leaderboard</button>
     <button onclick="changePage('settings')">Settings</button>
-    
   </nav>
 
   <main id="content">
@@ -35,9 +56,8 @@
 
   <footer>
     <p>&copy;
-      <script>
-        document.write(new Date().getFullYear());
-      </script> VoidByte Studio. All rights reserved.
+      <script>document.write(new Date().getFullYear());</script>
+      VoidByte Studio. All rights reserved.
     </p>
   </footer>
 

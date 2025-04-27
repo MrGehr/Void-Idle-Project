@@ -1,0 +1,68 @@
+/* settings.css — Styling Settings Page Consistent with Cosmic Theme */
+:root {
+    --font-display: 'Orbitron', sans-serif;
+    --bg-color:    #010012;
+    --nebula-color:#1b003b;
+    --primary:     #ff6aff;  /* your original pink */
+    --accent:      #66fffa;  /* your original teal */
+    --text:        #e0e0e0;
+    --shadow:      rgba(0, 0, 0, 0.7);
+  }
+
+.setting-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin: 16px 0;
+  }
+  
+  .setting-item label {
+    font-size: 1rem;
+    color: var(--text);
+    cursor: pointer;
+  }
+  
+  .setting-item input[type="checkbox"] {
+    transform: scale(1.2);
+    margin-right: 8px;
+  }
+  
+  /* Cosmic styled volume slider */
+  #volume-slider {
+    width: 20%;
+    margin-top: 6px;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 8px;
+    background: linear-gradient(90deg, var(--accent) 0%, var(--primary) 100%);
+    border-radius: 5px;
+    outline: none;
+    box-shadow: 0 0 6px var(--accent);
+    transition: background 0.3s;
+  }
+  
+  #volume-slider:hover {
+    background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+  }
+  
+  #volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--primary);
+    cursor: pointer;
+    box-shadow: 0 0 8px var(--accent);
+  }
+  
+  #volume-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--primary);
+    cursor: pointer;
+    box-shadow: 0 0 8px var(--accent);
+  }
+  

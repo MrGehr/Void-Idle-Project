@@ -1,0 +1,219 @@
+﻿/* nodes.css — page-specific styles only (shared layout from interface.css) */
+
+/* Header card: stats row + tick bar */
+.nodes-header-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.nodes-stats-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: center;
+}
+
+.nodes-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.nodes-stat-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text);
+  opacity: 0.6;
+}
+
+.nodes-stat strong {
+  font-size: 1.15rem;
+  color: var(--primary);
+  text-shadow: 0 0 8px rgba(255, 106, 255, 0.35);
+}
+
+/* Tick progress bar */
+.nodes-tick-wrap {
+  width: 100%;
+}
+
+.tick-progress {
+  width: 100%;
+  height: 12px;
+  appearance: none;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(102,255,250,0.22);
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.4);
+  display: block;
+}
+
+.tick-progress::-webkit-progress-bar {
+  background: rgba(255,255,255,0.06);
+  border-radius: 6px;
+}
+
+.tick-progress::-webkit-progress-value {
+  background: linear-gradient(90deg, var(--accent), var(--primary));
+  border-radius: 6px;
+  box-shadow: 0 0 14px var(--accent), 0 0 28px rgba(102, 255, 250, 0.35);
+}
+
+.tick-progress::-moz-progress-bar {
+  background: linear-gradient(90deg, var(--accent), var(--primary));
+  border-radius: 6px;
+}
+
+/* Nodes table */
+.nodes-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 6px;
+}
+
+/* Header row — stronger, more premium */
+.nodes-table thead tr {
+  background: rgba(161, 79, 255, 0.2);
+}
+
+.nodes-table thead tr td,
+.nodes-table thead tr th {
+  border-bottom: 1px solid rgba(102, 255, 250, 0.22);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.nodes-table th {
+  padding: 12px 14px;
+  text-align: center;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.nodes-table th:first-child { text-align: left; }
+
+.nodes-table td {
+  padding: 12px 14px;
+  text-align: center;
+  font-size: 0.95rem;
+  background: rgba(4, 0, 20, 0.4);
+  border-top: 1px solid rgba(255, 106, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 106, 255, 0.06);
+  transition: background 0.18s, border-color 0.18s;
+}
+
+.nodes-table td:first-child {
+  text-align: left;
+  border-radius: 8px 0 0 8px;
+  border-left: 1px solid rgba(255, 106, 255, 0.06);
+}
+
+.nodes-table td:last-child {
+  border-radius: 0 8px 8px 0;
+  border-right: 1px solid rgba(255, 106, 255, 0.06);
+}
+
+/* Hover: lift the whole row with a teal aura */
+.nodes-table tbody tr:hover td {
+  background: rgba(27, 0, 59, 0.62);
+  border-color: rgba(102, 255, 250, 0.22);
+  box-shadow: 0 0 12px rgba(102, 255, 250, 0.06) inset;
+}
+
+/* Rows where the player owns at least one — subtle owned glow */
+.nodes-table tbody tr.has-nodes td {
+  border-top-color: rgba(102, 255, 250, 0.12);
+  border-bottom-color: rgba(102, 255, 250, 0.12);
+}
+
+.nodes-table tbody tr.has-nodes td:first-child {
+  border-left-color: rgba(102, 255, 250, 0.18);
+}
+
+.nodes-table tbody tr.has-nodes td:last-child {
+  border-right-color: rgba(102, 255, 250, 0.18);
+}
+
+/* Owned count — bright accent when > 0 */
+.node-count {
+  color: var(--text);
+  opacity: 0.45;
+  transition: color 0.2s, opacity 0.2s;
+}
+
+.has-nodes .node-count {
+  color: var(--accent);
+  opacity: 1;
+  font-weight: 700;
+  text-shadow: 0 0 8px rgba(102, 255, 250, 0.5);
+}
+
+/* Node cell: icon + text */
+.node-entry {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.node-icon {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  flex-shrink: 0;
+  transition: filter 0.2s;
+}
+
+.nodes-table tbody tr:hover .node-icon {
+  filter: drop-shadow(0 0 5px rgba(102, 255, 250, 0.5));
+}
+
+.has-nodes .node-icon {
+  filter: drop-shadow(0 0 3px rgba(102, 255, 250, 0.3));
+}
+
+.node-name {
+  color: var(--text);
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.node-production {
+  color: var(--accent);
+  font-size: 0.74rem;
+  opacity: 0.7;
+  letter-spacing: 0.03em;
+  margin-top: 2px;
+}
+
+/* Buy button states — affordable vs locked */
+#nodes-table-body .page-btn {
+  padding: 8px 16px;
+  font-size: 0.84rem;
+  min-width: 80px;
+}
+
+#nodes-table-body .page-btn.can-afford {
+  border-color: var(--primary);
+  box-shadow: 0 0 14px rgba(255, 106, 255, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  color: var(--primary);
+}
+
+#nodes-table-body .page-btn.can-afford:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 0 22px rgba(255, 106, 255, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+#nodes-table-body .page-btn:disabled {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.22);
+  box-shadow: none;
+  cursor: default;
+  opacity: 1;
+}

@@ -1,0 +1,530 @@
+/* interface.css — Cosmic Theme with Subtle Glow + Orbitron font */
+
+:root {
+  --font-display: 'Orbitron', sans-serif;
+  --bg-color: #010012;
+  --nebula-color: #1b003b;
+  --primary: #ff6aff;
+  /* your original pink */
+  --accent: #66fffa;
+  /* your original teal */
+  --text: #e0e0e0;
+  --shadow: rgba(0, 0, 0, 0.7);
+}
+
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  background: radial-gradient(circle at top left, var(--nebula-color) 0%, var(--bg-color) 100%);
+  color: var(--text);
+  font-family: var(--font-display), Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  position: relative;
+}
+
+/* Vignette overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.6) 100%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  /* use a small, seamless star tile */
+  background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
+  background-repeat: repeat;
+
+  opacity: 0.2;
+  pointer-events: none;
+
+  /* sit above the gradient, below your UI */
+  z-index: 0;
+
+  /* subtle fade + drift */
+  animation:
+    twinkle 60s linear infinite,
+    star-move 120s linear infinite;
+}
+
+/* Disable background animation when user toggles it off */
+.no-bg-animation::before {
+  display: none;
+}
+
+@keyframes twinkle {
+
+  0%,
+  100% {
+    opacity: 0.15;
+  }
+
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@keyframes star-move {
+  0% {
+    background-position: 0 0;
+  }
+
+  100% {
+    background-position: 2000px 2000px;
+  }
+}
+
+/* Header & logo */
+header {
+  position: relative;
+  padding: 14px 0 10px;
+  text-align: center;
+  overflow: visible;
+  z-index: 2;
+}
+
+/* ── Dev panel (reset + add VE) ── */
+#dev-panel {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+}
+
+#dev-reset-btn {
+  background: rgba(255, 60, 60, 0.15);
+  color: #ff6060;
+  border: 1px solid rgba(255, 60, 60, 0.4);
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 0.72rem;
+  font-family: 'Orbitron', monospace;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  opacity: 0.6;
+  transition: opacity 0.2s, box-shadow 0.2s;
+  width: 100%;
+}
+
+#dev-reset-btn:hover {
+  opacity: 1;
+  box-shadow: 0 0 8px rgba(255, 60, 60, 0.5);
+}
+
+#dev-add-ve {
+  display: flex;
+  gap: 4px;
+}
+
+#dev-ve-input {
+  width: 90px;
+  background: rgba(102, 255, 250, 0.08);
+  border: 1px solid rgba(102, 255, 250, 0.3);
+  border-radius: 6px;
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-family: 'Orbitron', monospace;
+  padding: 4px 6px;
+  outline: none;
+}
+
+#dev-add-ve button {
+  background: rgba(102, 255, 250, 0.12);
+  color: var(--accent);
+  border: 1px solid rgba(102, 255, 250, 0.35);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 0.72rem;
+  font-family: 'Orbitron', monospace;
+  cursor: pointer;
+  opacity: 0.65;
+  transition: opacity 0.2s, box-shadow 0.2s;
+  white-space: nowrap;
+}
+
+#dev-add-ve button:hover {
+  opacity: 1;
+  box-shadow: 0 0 8px rgba(102, 255, 250, 0.4);
+}
+
+/* Soft ambient bloom behind the emblem — removed, pill background handles depth */
+header::before {
+  display: none;
+}
+
+/* ── Title layout: single horizontal row ── */
+.game-title {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  background: rgba(4, 0, 20, 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 106, 255, 0.14);
+  border-radius: 50px;
+  padding: 10px 24px 10px 16px;
+  box-shadow: 0 2px 18px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* ── Void portal SVG emblem ── */
+.title-orb {
+  width: 36px;
+  height: 36px;
+  display: block;
+  flex-shrink: 0;
+  animation: orb-drift 18s linear infinite, orb-pulse-glow 4s ease-in-out infinite alternate;
+}
+
+@keyframes orb-drift {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes orb-pulse-glow {
+  from {
+    filter: drop-shadow(0 0 3px rgba(255, 106, 255, 0.35)) drop-shadow(0 0 6px rgba(102, 255, 250, 0.15));
+  }
+
+  to {
+    filter: drop-shadow(0 0 6px rgba(255, 106, 255, 0.6)) drop-shadow(0 0 10px rgba(102, 255, 250, 0.3));
+  }
+}
+
+/* ── Text block beside the orb ── */
+.title-text-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  line-height: 1;
+}
+
+/* ── Wordmark ── */
+.title-wordmark {
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+  line-height: 1;
+}
+
+.title-void {
+  font-family: var(--font-display), sans-serif;
+  font-size: 1.45rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  background: linear-gradient(110deg, var(--primary) 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 6px rgba(255, 106, 255, 0.4));
+}
+
+.title-idle {
+  font-family: var(--font-display), sans-serif;
+  font-size: 1.45rem;
+  font-weight: 400;
+  letter-spacing: 0.28em;
+  color: var(--accent);
+  opacity: 0.6;
+  padding-left: 0.1em;
+  filter: drop-shadow(0 0 4px rgba(102, 255, 250, 0.3));
+}
+
+/* Subtitle tagline */
+.title-sub {
+  font-family: var(--font-display), sans-serif;
+  font-size: 0.48rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--text);
+  opacity: 0.28;
+  margin-top: 2px;
+}
+
+/* Navigation */
+nav {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 30px;
+  z-index: 1;
+}
+
+nav button {
+  background: rgba(0, 0, 0, 0.45);
+  color: rgba(224, 224, 224, 0.7);
+  border: 1px solid rgba(255, 106, 255, 0.14);
+  padding: 14px 20px;
+  font-size: 0.82rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  text-shadow: none;
+  backdrop-filter: blur(8px);
+  transition: transform 0.18s, box-shadow 0.2s, border-color 0.2s, color 0.2s, background 0.2s;
+  cursor: pointer;
+  font-family: var(--font-display), Arial, sans-serif;
+  letter-spacing: 0.04em;
+}
+
+nav button:hover {
+  transform: translateY(-2px) scale(1.03);
+  border-color: rgba(102, 255, 250, 0.4);
+  color: var(--accent);
+  box-shadow: 0 4px 16px rgba(102, 255, 250, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  background: rgba(102, 255, 250, 0.05);
+}
+
+nav button.nav-active {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: rgba(255, 106, 255, 0.12);
+  box-shadow:
+    0 0 16px rgba(255, 106, 255, 0.28),
+    0 0 4px rgba(255, 106, 255, 0.15) inset,
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+/* Main scrollable area */
+main {
+  height: calc(100vh - 140px);
+  overflow-y: auto;
+  padding-bottom: 40px;
+}
+
+/* Home page — no page-level scroll; footer pins to bottom */
+main.wide-home {
+  overflow-y: hidden;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 0;
+}
+
+footer {
+  text-align: center;
+  padding: 4px 0;
+  font-size: 0.72rem;
+  color: var(--accent);
+  letter-spacing: 0.06em;
+  opacity: 0.55;
+  pointer-events: none;
+  margin-top: 6px;
+}
+
+/* ═══════════════════════════════════════════
+   Shared page layout — used by every tab
+   ═══════════════════════════════════════════ */
+
+/* Outer wrapper: same rhythm as .home-root */
+.page-root {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 32px 20px 48px;
+}
+
+/* Page heading */
+.page-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+  text-align: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 106, 255, 0.15);
+  margin: 0;
+}
+
+/* Card — matches .home-card exactly */
+.page-card {
+  background: rgba(4, 0, 20, 0.6);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 106, 255, 0.18);
+  border-radius: 14px;
+  padding: 18px 20px;
+  min-width: 0;
+  /* prevent grid blowout */
+  overflow: hidden;
+  /* clip table rows at rounded corners */
+  box-shadow: 0 4px 28px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition: transform 0.2s, border-color 0.25s, box-shadow 0.25s;
+}
+
+.page-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(102, 255, 250, 0.45);
+  box-shadow: 0 8px 32px rgba(102, 255, 250, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* Card header — matches .home-card-hdr */
+.page-card-hdr {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--accent);
+  border-bottom: 1px solid rgba(255, 106, 255, 0.15);
+  padding-bottom: 8px;
+  margin-bottom: 14px;
+  letter-spacing: 0.05em;
+}
+
+/* Auto-fit card grid */
+.page-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+/* Shared button (primary action) */
+.page-btn {
+  background: rgba(255, 106, 255, 0.1);
+  color: var(--primary);
+  border: 1px solid rgba(255, 106, 255, 0.4);
+  padding: 10px 18px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(255, 106, 255, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  font-family: var(--font-display), Arial, sans-serif;
+  transition: transform 0.18s, box-shadow 0.2s, background 0.2s, border-color 0.2s;
+  letter-spacing: 0.04em;
+}
+
+.page-btn:hover:enabled {
+  transform: translateY(-2px) scale(1.03);
+  background: rgba(255, 106, 255, 0.18);
+  border-color: var(--primary);
+  box-shadow: 0 0 20px rgba(255, 106, 255, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+.page-btn:disabled {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.3);
+  cursor: default;
+  opacity: 0.7;
+  box-shadow: none;
+}
+
+/* Shared key-value list */
+.page-kv-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.page-kv-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.page-kv-list li span {
+  color: var(--text);
+  opacity: 0.7;
+}
+
+.page-kv-list li strong {
+  color: var(--primary);
+}
+
+/* ─── Inline SVG icon system ─────────────────────────────────────────────── */
+
+.gi {
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+  stroke: currentColor;
+  fill: none;
+  /* subtle drop-shadow matching the cosmic palette */
+  filter: drop-shadow(0 0 3px currentColor);
+}
+
+/* page-card-hdr: icon sits beside the text */
+.page-card-hdr,
+.home-card-hdr {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* page-title: icon + text centred together */
+.page-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* nav: each button becomes icon-above-label column */
+nav button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 10px 14px;
+}
+
+nav button .gi {
+  width: 18px;
+  height: 18px;
+  opacity: 0.75;
+  transition: opacity 0.18s;
+}
+
+nav button:hover .gi,
+nav button.nav-active .gi {
+  opacity: 1;
+}
+
+.nav-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+/* chip-icon: replace emoji sizing with SVG sizing */
+.chip-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

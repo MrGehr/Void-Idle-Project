@@ -1,0 +1,74 @@
+/* upgrades.css — styling for the Upgrades page */
+
+/* Container styling matching nodes/achievements theme */
+#upgrades-tab {
+    max-width: 1280px;
+    margin: 0 auto 40px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    padding: 24px;
+    box-shadow: 0 2px 6px var(--shadow);
+  }
+  
+  /* Upgrades list as responsive grid */
+  .upgrades-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+    margin-top: 16px;
+  }
+  
+  /* Individual upgrade card */
+  .upgrade-card {
+    background: linear-gradient(135deg, var(--nebula-color), var(--bg-color));
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 0 6px var(--accent);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .upgrade-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0 12px var(--accent);
+  }
+  
+  /* Upgrade info text */
+  .upgrade-info h3 {
+    color: var(--primary);
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+  }
+  .upgrade-info p {
+    color: var(--text);
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+    line-height: 1.4;
+  }
+  
+  /* Buy button styling */
+  .buy-btn {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: var(--bg-color);
+    border: none;
+    padding: 10px 16px;
+    font-size: 0.95rem;
+    font-weight: bold;
+    border-radius: 6px;
+    box-shadow: 0 0 4px var(--primary);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .buy-btn:hover:enabled {
+    transform: scale(1.05);
+    box-shadow: 0 0 12px var(--accent);
+  }
+  .buy-btn:disabled {
+    background: grey;
+    cursor: default;
+    opacity: 0.6;
+  }
+  

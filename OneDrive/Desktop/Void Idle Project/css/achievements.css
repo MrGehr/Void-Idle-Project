@@ -1,0 +1,73 @@
+/* Achievements container matches your Nodes style */
+#achievements-tab {
+    max-width: 1280px;
+    margin: 0 auto 40px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid var(--primary);
+    border-radius: 10px;
+    padding: 24px;
+    box-shadow: 0 2px 6px var(--shadow);
+  }
+  
+  /* One-column list */
+  .achievements-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+  }
+  
+  /* Row-style card */
+  .achievement-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(135deg, var(--nebula-color), var(--bg-color));
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    padding: 12px 16px;
+  }
+  
+  /* Text grows to fill left */
+  .achievement-info {
+    flex: 1;
+  }
+  
+  .achievement-info h3 {
+    color: var(--primary);
+    font-size: 1rem;
+    margin: 0;
+  }
+  
+  .achievement-info p {
+    color: var(--text);
+    font-size: 0.85rem;
+    margin: 4px 0 0;
+  }
+  
+  /* Claim button stuck on the right */
+  .claim-btn {
+    margin-left: 16px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: var(--bg-color);
+    border: none;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    border-radius: 4px;
+    box-shadow: 0 0 4px var(--primary);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .claim-btn:hover:enabled {
+    transform: scale(1.05);
+    box-shadow: 0 0 12px var(--accent);
+  }
+  
+  .claim-btn:disabled {
+    background: grey;
+    cursor: default;
+    opacity: 0.6;
+  }
+  
+  

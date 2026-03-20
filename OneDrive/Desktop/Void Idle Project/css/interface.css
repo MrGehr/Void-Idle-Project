@@ -1,0 +1,133 @@
+/* interface.css — Cosmic Theme with Subtle Glow + Orbitron font */
+
+:root {
+  --font-display: 'Orbitron', sans-serif;
+  --bg-color:    #010012;
+  --nebula-color:#1b003b;
+  --primary:     #ff6aff;  /* your original pink */
+  --accent:      #66fffa;  /* your original teal */
+  --text:        #e0e0e0;
+  --shadow:      rgba(0, 0, 0, 0.7);
+}
+
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  background: radial-gradient(
+    circle at top left,
+    var(--nebula-color) 0%,
+    var(--bg-color) 100%
+  );
+  color: var(--text);
+  font-family: var(--font-display), Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+
+  /* use a small, seamless star tile */
+  background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
+  background-repeat: repeat;
+
+  opacity: 0.2;
+  pointer-events: none;
+
+  /* sit above the gradient, below your UI */
+  z-index: 0;
+
+  /* subtle fade + drift */
+  animation:
+    twinkle   60s linear infinite,
+    star-move 120s linear infinite;
+}
+
+/* Disable background animation when user toggles it off */
+.no-bg-animation::before {
+  display: none;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.15; }
+  50%      { opacity: 0.35; }
+}
+@keyframes star-move {
+  0%   { background-position: 0 0; }
+  100% { background-position: 2000px 2000px; }
+}
+
+/* Header & logo */
+header {
+  position: relative;
+  margin-bottom: 20px;
+  text-align: center;
+}
+header::before {
+  content: "";
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 160px; height: 160px;
+  background: radial-gradient(
+    circle,
+    rgba(255,106,255,0.15) 0%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  filter: blur(6px);
+  pointer-events: none;
+}
+.title-image {
+  position: relative;
+  max-width: 100px;
+  margin: 0 auto 20px;
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 0 2px var(--accent));
+  opacity: 0.9;
+}
+
+/* Navigation */
+nav {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 30px;
+  z-index: 1;
+}
+nav button {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: var(--bg-color);
+  border: none;
+  padding: 12px 24px;
+  font-size: 1rem;
+  border-radius: 6px;
+  box-shadow: 0 0 4px var(--primary);
+  text-shadow: 0 0 2px var(--accent);
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+nav button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 12px var(--accent);
+}
+
+/* Main scrollable area */
+main {
+  height: calc(100vh - 140px);
+  overflow-y: auto;
+  padding-bottom: 40px;
+}

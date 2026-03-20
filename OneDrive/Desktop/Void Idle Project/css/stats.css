@@ -1,0 +1,90 @@
+/* stats.css - Balanced 2-Column Dashboard Layout */
+:root {
+    --font-display: 'Orbitron', sans-serif;
+    --bg-color:    #010012;
+    --nebula-color:#1b003b;
+    --primary:     #ff6aff;  /* your original pink */
+    --accent:      #66fffa;  /* your original teal */
+    --text:        #e0e0e0;
+    --shadow:      rgba(0, 0, 0, 0.7);
+  }
+
+.stats-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columns */
+    gap: 20px;
+}
+
+.stats-container h2 {
+    text-align: center;
+    font-size: 2rem;
+    color: var(--accent);
+    margin-bottom: 20px;
+    grid-column: 1 / -1; /* h2 spans both columns */
+}
+
+.stats-card {
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid var(--primary);
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 4px 12px rgba(102,255,250,0.2);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.stats-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(102,255,250,0.4);
+}
+
+.stats-card h3 {
+    color: var(--primary);
+    margin-bottom: 12px;
+    font-size: 1.3rem;
+    border-bottom: 1px solid rgba(255,106,255,0.2);
+    padding-bottom: 6px;
+}
+
+.stats-card p, .stats-card table {
+    font-size: 1rem;
+    margin-top: 10px;
+}
+
+.stats-card table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 6px;
+    margin-top: 10px;
+}
+
+.stats-card th {
+    background: rgba(161,79,255,0.2);
+    color: var(--accent);
+    padding: 8px;
+    border-radius: 6px;
+}
+
+.stats-card td {
+    background: rgba(0,0,0,0.3);
+    color: var(--text);
+    padding: 8px;
+    text-align: center;
+    border-radius: 6px;
+}
+
+.stats-card tbody tr:hover td {
+    background: rgba(161,79,255,0.15);
+}
+
+/* Subtle number update effect */
+@keyframes fadeInUpdate {
+    from { opacity: 0.5; }
+    to { opacity: 1; }
+}
+
+.stats-card span {
+    animation: fadeInUpdate 0.2s ease-in-out;
+}

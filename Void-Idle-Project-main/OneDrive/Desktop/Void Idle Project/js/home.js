@@ -4,6 +4,49 @@
 if (typeof window.changelogEntries === 'undefined') {
   window.changelogEntries = [
     {
+      version: "v0.0.7",
+      date:    "2026-03-19",
+      summary: "Title screen, tutorial, economy rebalance, and quality-of-life improvements",
+      highlights: [
+        "Full title screen with animated void orb, menu system, and inline settings",
+        "New player tutorial walking through all core game mechanics",
+        "Major economy rebalance — mid-to-late game significantly harder",
+        "Custom modals replace all browser popups for a polished feel",
+      ],
+      sections: [
+        { tag: 'Added', notes: [
+          "Title screen with animated void portal, floating dust particles, and ambient glow rings",
+          "Title screen menu: Continue, New Game, and Settings with save detection",
+          "Title screen settings panel — background animation, click effects, title music, volume",
+          "Custom character name modal with live validation and duplicate name checking",
+          "Custom new game confirmation modal with checkbox requirement",
+          "New player tutorial — 8-step guided walkthrough with element highlighting",
+          "Tutorial highlights game elements with a flashing yellow glow",
+          "Total Passive Mult row on home screen Active Bonuses card",
+          "Auto-save every 30 seconds to prevent progress loss",
+          "Copyright and version footer fixed to the bottom of all in-game pages",
+          "Title screen music plays on first interaction, stops on game enter",
+          "Version number (v0.0.7) displayed on title screen and in-game footer",
+        ]},
+        { tag: 'Changed', notes: [
+          "Node cost scaling now tiered per node type (1.18 early to 1.35 late)",
+          "Orb passive bonuses reduced — full set ~72K× down from ~15.6M×",
+          "Orb costs increased across all tiers (early 3×, late 10×+)",
+          "All upgrade costs now use irregular/organic values instead of clean round numbers",
+          "Late-game upgrade costs bumped with ~100× gaps for tier 7+",
+          "Achievement thresholds increased substantially across all categories",
+          "Upgrades.js condensed from ~838 lines to ~100 using generated data tables",
+          "Title screen music relabeled from 'Background Space Sound' to 'Title Screen Music'",
+          "Dev reset now returns to title screen and clears all user data including names",
+        ]},
+        { tag: 'Fixed', notes: [
+          "Title music no longer bleeds into the game when clicking Continue quickly",
+          "New Game now properly clears player name and used names list",
+          "Refreshing the page now correctly shows Continue when a session exists",
+        ]},
+      ]
+    },
+    {
       version: "v0.0.6",
       date:    "2026-03-19",
       summary: "UI polish, home page redesign, and shop/upgrade state improvements",
@@ -215,6 +258,7 @@ function loadHomePage(content) {
             <li><span>Equipped Orb</span><strong id="homeActivOrbName" style="font-size:0.8rem">—</strong></li>
             <li><span>Passive</span><strong id="homeActivePassive" style="color:var(--accent);font-size:0.78rem;text-align:right;max-width:60%">—</strong></li>
             <li><span>Active</span><strong id="homeActiveActive" style="color:var(--primary);font-size:0.78rem;text-align:right;max-width:60%">—</strong></li>
+            <li id="homeTotalPassiveRow" style="display:none"><span>Total Passive Mult</span><strong id="homeTotalPassive">1.00×</strong></li>
             <li id="homeNodeMultRow" style="display:none"><span>Best Node Mult</span><strong id="homeNodeMult">1.00×</strong></li>
             <li id="homeClickMultRow" style="display:none"><span>Click Mult</span><strong id="homeClickMult">1.00×</strong></li>
           </ul>
@@ -436,6 +480,18 @@ function updateHomeDynamic() {
     if (el('homeActivePassive')) el('homeActivePassive').textContent = '—';
     if (el('homeActiveActive'))  el('homeActiveActive').textContent  = '—';
   }
+  // Total passive multiplier from all owned orbs
+  let totalPassiveMult = 1;
+  (window.orbsData || []).forEach(orb => {
+    if (orb.owned && orb.passive.veptBonus > 0) totalPassiveMult *= (1 + orb.passive.veptBonus);
+  });
+  if (totalPassiveMult > 1) {
+    if (el('homeTotalPassiveRow')) el('homeTotalPassiveRow').style.display = '';
+    if (el('homeTotalPassive'))    el('homeTotalPassive').textContent      = totalPassiveMult.toFixed(2) + '×';
+  } else {
+    if (el('homeTotalPassiveRow')) el('homeTotalPassiveRow').style.display = 'none';
+  }
+
   const bestNodeMult = window.nodesData.reduce((best, n) => {
     const m = (n.productionMultiplier || new Decimal(1)).toNumber();
     return m > best ? m : best;

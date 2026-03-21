@@ -33,13 +33,13 @@ function loadSettingsPage(content) {
         <div class="setting-item">
           <label>
             <input type="checkbox" id="toggle-bg-sound" ${window.backgroundSoundEnabled ? 'checked' : ''}>
-            Background Space Sound
+            Title Screen Music
           </label>
         </div>
 
         <div class="setting-item">
           <label for="volume-slider">
-            Volume: <span id="volume-value">${Math.round(window.bgAudio.volume * 100)}</span>%
+            Title Music Volume: <span id="volume-value">${Math.round(window.bgAudio.volume * 100)}</span>%
           </label>
           <input type="range" id="volume-slider" min="0" max="100" value="${Math.round(window.bgAudio.volume * 100)}">
         </div>
@@ -53,10 +53,6 @@ function loadSettingsPage(content) {
   const volumeValue = document.getElementById('volume-value');
 
   document.body.classList.toggle('no-bg-animation', !bgEnabled);
-
-  if (window.backgroundSoundEnabled) {
-    window.bgAudio.play().catch(() => {});
-  }
 
   const clickEffectsCheckbox = document.getElementById('toggle-click-effects');
 
@@ -91,9 +87,4 @@ function loadSettingsPage(content) {
 // Expose loader
 window.loadSettingsPage = loadSettingsPage;
 
-// Start background sound after first user interaction (click)
-document.body.addEventListener('click', () => {
-  if (window.backgroundSoundEnabled && window.bgAudio.paused) {
-    window.bgAudio.play().catch(() => {});
-  }
-}, { once: true });
+// Title screen music is started/stopped by the title screen code in main.js

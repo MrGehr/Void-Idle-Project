@@ -26,13 +26,13 @@ function getTickInterval() {
 // === Node Definitions (single source of truth) ===
 // baseCost is stored so resetGame can restore original costs.
 window.nodesData = window.nodesData || [
-  { id: 'abyssalshard',   name: 'Abyssal Shard',    count: 0, cost: new Decimal(10),        baseCost: new Decimal(10),        baseProduction: new Decimal(1)      },
-  { id: 'whisperengine',  name: 'Whisper Engine',   count: 0, cost: new Decimal(150),        baseCost: new Decimal(150),        baseProduction: new Decimal(10)     },
-  { id: 'darkmatterloop', name: 'Dark Matter Loop', count: 0, cost: new Decimal(2000),       baseCost: new Decimal(2000),       baseProduction: new Decimal(80)     },
-  { id: 'voidbloom',      name: 'Void Bloom',       count: 0, cost: new Decimal(30000),      baseCost: new Decimal(30000),      baseProduction: new Decimal(500)    },
-  { id: 'gravitonseeder', name: 'Graviton Seeder',  count: 0, cost: new Decimal(500000),     baseCost: new Decimal(500000),     baseProduction: new Decimal(4000)   },
-  { id: 'nullbeacon',     name: 'Null Beacon',      count: 0, cost: new Decimal('1e7'),       baseCost: new Decimal('1e7'),       baseProduction: new Decimal(30000)  },
-  { id: 'oblivionspire',  name: 'Oblivion Spire',   count: 0, cost: new Decimal('2.5e8'),    baseCost: new Decimal('2.5e8'),    baseProduction: new Decimal(200000) },
+  { id: 'abyssalshard',   name: 'Abyssal Shard',    count: 0, cost: new Decimal(10),        baseCost: new Decimal(10),        baseProduction: new Decimal(1),      costGrowth: 1.18 },
+  { id: 'whisperengine',  name: 'Whisper Engine',   count: 0, cost: new Decimal(150),        baseCost: new Decimal(150),        baseProduction: new Decimal(10),     costGrowth: 1.18 },
+  { id: 'darkmatterloop', name: 'Dark Matter Loop', count: 0, cost: new Decimal(2000),       baseCost: new Decimal(2000),       baseProduction: new Decimal(80),     costGrowth: 1.22 },
+  { id: 'voidbloom',      name: 'Void Bloom',       count: 0, cost: new Decimal(30000),      baseCost: new Decimal(30000),      baseProduction: new Decimal(500),    costGrowth: 1.25 },
+  { id: 'gravitonseeder', name: 'Graviton Seeder',  count: 0, cost: new Decimal(500000),     baseCost: new Decimal(500000),     baseProduction: new Decimal(4000),   costGrowth: 1.28 },
+  { id: 'nullbeacon',     name: 'Null Beacon',      count: 0, cost: new Decimal('1e7'),       baseCost: new Decimal('1e7'),       baseProduction: new Decimal(30000),  costGrowth: 1.32 },
+  { id: 'oblivionspire',  name: 'Oblivion Spire',   count: 0, cost: new Decimal('2.5e8'),    baseCost: new Decimal('2.5e8'),    baseProduction: new Decimal(200000), costGrowth: 1.35 },
 ];
 
 // === Orb Definitions (shop source of truth) ===
@@ -52,7 +52,7 @@ window.orbsData = window.orbsData || [
   },
   {
     id: 'ember-shard',    name: 'Ember Shard',
-    cost: 5_000,          owned: false,
+    cost: 15_000,         owned: false,
     color: '#ff7a3d',     glow: 'rgba(255,122,61,0.55)',
     bg:   'radial-gradient(circle at 38% 32%, #7a2200 0%, #3a1000 50%, #010012 100%)',
     flavor: 'A smouldering crystal drawn from the void-flame rift.',
@@ -61,7 +61,7 @@ window.orbsData = window.orbsData || [
   },
   {
     id: 'frost-prism',    name: 'Frost Prism',
-    cost: 50_000,         owned: false,
+    cost: 200_000,        owned: false,
     color: '#66fffa',     glow: 'rgba(102,255,250,0.55)',
     bg:   'radial-gradient(circle at 38% 32%, #004a55 0%, #001820 50%, #010012 100%)',
     flavor: 'Harvested from ice formations at the edge of null-space.',
@@ -70,74 +70,74 @@ window.orbsData = window.orbsData || [
   },
   {
     id: 'shadow-wisp',    name: 'Shadow Wisp',
-    cost: 500_000,        owned: false,
+    cost: 2_000_000,      owned: false,
     color: '#b366ff',     glow: 'rgba(179,102,255,0.55)',
     bg:   'radial-gradient(circle at 38% 32%, #3a006b 0%, #150030 50%, #010012 100%)',
     flavor: 'A captured void-ghost that hungers for energy.',
-    passive: { label: '+60% VE per tick.',               veptBonus: 0.60 },
+    passive: { label: '+50% VE per tick.',                veptBonus: 0.50 },
     active:  { label: 'Clicks earn 2% of VEPT + auto-click every 5s.', clickPct: 0.02, autoClick: true, autoClickMs: 5000 },
   },
   {
     id: 'plasma-core',    name: 'Plasma Core',
-    cost: 5_000_000,      owned: false,
+    cost: 50_000_000,     owned: false,
     color: '#ffe566',     glow: 'rgba(255,229,102,0.55)',
     bg:   'radial-gradient(circle at 38% 32%, #5a4500 0%, #1e1500 50%, #010012 100%)',
     flavor: 'A miniature star — condensed void-plasma in crystalline suspension.',
-    passive: { label: '+100% VE per tick (2×).',        veptBonus: 1.00 },
+    passive: { label: '+80% VE per tick.',               veptBonus: 0.80 },
     active:  { label: 'Clicks earn 5% of VEPT.',         clickPct: 0.05  },
   },
   {
     id: 'abyssal-crown',  name: 'Abyssal Crown',
-    cost: 50_000_000,     owned: false,
+    cost: 750_000_000,    owned: false,
     color: '#ff3d6e',     glow: 'rgba(255,61,110,0.55)',
     bg:   'radial-gradient(circle at 38% 32%, #6b0025 0%, #280010 50%, #010012 100%)',
     flavor: 'The apex of void power. Every 5th click unleashes an annihilation surge.',
-    passive: { label: '+200% VE per tick (3×).',        veptBonus: 2.00 },
+    passive: { label: '+150% VE per tick (2.5×).',       veptBonus: 1.50 },
     active:  { label: 'Clicks earn 10% of VEPT. Every 5th click is 5×.', clickPct: 0.10, combo: true, comboN: 5, comboMult: 5 },
   },
   {
     id: 'void-rift',      name: 'Void Rift',
-    cost: 500_000_000,    owned: false,
+    cost: 25_000_000_000, owned: false,
     color: '#00ffcc',     glow: 'rgba(0,255,204,0.55)',
     bg:   'radial-gradient(circle at 38% 32%, #004a3a 0%, #001a14 50%, #010012 100%)',
     flavor: 'A fracture in reality where raw void energy bleeds through unchecked. Unpredictable. Hungry.',
-    passive: { label: '+350% VE per tick.',              veptBonus: 3.50 },
+    passive: { label: '+200% VE per tick (3×).',         veptBonus: 2.00 },
     active:  { label: 'Clicks earn 8% of VEPT. 30% chance to crit for 6×.', clickPct: 0.08, critChance: 0.30, critMult: 6 },
   },
   {
     id: 'temporal-lens',  name: 'Temporal Lens',
-    cost: 5_000_000_000,  owned: false,
+    cost: 500_000_000_000, owned: false,
     color: '#ffd700',     glow: 'rgba(255,215,0,0.55)',
     bg:   'radial-gradient(circle at 38% 32%, #5a4a00 0%, #1a1400 50%, #010012 100%)',
     flavor: 'Bends the flow of void-time itself — compressing cycles, accelerating harvests.',
-    passive: { label: '+700% VE per tick.',              veptBonus: 7.00 },
+    passive: { label: '+300% VE per tick (4×).',         veptBonus: 3.00 },
     active:  { label: 'Clicks earn 4% of VEPT. Auto-clicks every 2.5s. Every 4th click is 3×.', clickPct: 0.04, autoClick: true, autoClickMs: 2500, combo: true, comboN: 4, comboMult: 3 },
   },
   {
     id: 'entropy-engine', name: 'Entropy Engine',
-    cost: 50_000_000_000, owned: false,
+    cost: 25_000_000_000_000, owned: false,
     color: '#7fff00',     glow: 'rgba(127,255,0,0.55)',
     bg:   'radial-gradient(circle at 38% 32%, #1a3a00 0%, #0a1400 50%, #010012 100%)',
     flavor: 'Converts disorder into power through cascading chain reactions. One click becomes many.',
-    passive: { label: '+1500% VE per tick.',             veptBonus: 15.00 },
+    passive: { label: '+500% VE per tick (6×).',         veptBonus: 5.00 },
     active:  { label: 'Clicks earn 6% of VEPT and cascade into 4 sub-hits at 35% each.', clickPct: 0.06, cascadeCount: 4, cascadePct: 0.35 },
   },
   {
     id: 'null-sovereign', name: 'Null Sovereign',
-    cost: 500_000_000_000, owned: false,
+    cost: 1_000_000_000_000_000, owned: false,
     color: '#c8c8ff',     glow: 'rgba(200,200,255,0.55)',
     bg:   'radial-gradient(circle at 38% 32%, #2a2a6b 0%, #0e0e2a 50%, #010012 100%)',
     flavor: 'An ancient null-point of supreme dominion. It does not merely use void energy — it commands it.',
-    passive: { label: '+3000% VE per tick.',             veptBonus: 30.00 },
+    passive: { label: '+800% VE per tick (9×).',         veptBonus: 8.00 },
     active:  { label: 'Clicks earn 5% of VEPT. Auto-clicks every 1.5s. Every 7th click is 15×.', clickPct: 0.05, autoClick: true, autoClickMs: 1500, combo: true, comboN: 7, comboMult: 15 },
   },
   {
     id: 'eternal-collapse', name: 'Eternal Collapse',
-    cost: 5_000_000_000_000, owned: false,
+    cost: 50_000_000_000_000_000, owned: false,
     color: '#ff0044',     glow: 'rgba(255,0,68,0.55)',
     bg:   'radial-gradient(circle at 38% 32%, #6b0015 0%, #200008 50%, #010012 100%)',
     flavor: 'The final convergence of all void matter. Its pull is inescapable. Its power, absolute.',
-    passive: { label: '+6000% VE per tick.',             veptBonus: 60.00 },
+    passive: { label: '+1000% VE per tick (11×).',       veptBonus: 10.00 },
     active:  { label: 'Clicks earn 15% of VEPT. Every 3rd click is 20×. 40% chance to crit for 5×.', clickPct: 0.15, combo: true, comboN: 3, comboMult: 20, critChance: 0.40, critMult: 5 },
   },
 ];
@@ -205,11 +205,11 @@ const achievementConditions = [
   { id: 've-1q',          check: () => lifetimeVE.gte('1e15') },
 
   // Clicking milestones
-  { id: 'click-10',   check: () => window.totalClicks >= 10 },
-  { id: 'click-100',  check: () => window.totalClicks >= 100 },
-  { id: 'click-1k',   check: () => window.totalClicks >= 1_000 },
-  { id: 'click-10k',  check: () => window.totalClicks >= 10_000 },
-  { id: 'click-50k',  check: () => window.totalClicks >= 50_000 },
+  { id: 'click-10',   check: () => window.totalClicks >= 25 },
+  { id: 'click-100',  check: () => window.totalClicks >= 250 },
+  { id: 'click-1k',   check: () => window.totalClicks >= 2_500 },
+  { id: 'click-10k',  check: () => window.totalClicks >= 15_000 },
+  { id: 'click-50k',  check: () => window.totalClicks >= 75_000 },
 
   // Node first purchase
   { id: 'node-abyssal-first',    check: () => (window.nodesData.find(n => n.id === 'abyssalshard')?.count   || 0) >= 1 },
@@ -221,15 +221,15 @@ const achievementConditions = [
   { id: 'node-oblivion-first',   check: () => (window.nodesData.find(n => n.id === 'oblivionspire')?.count  || 0) >= 1 },
 
   // Total node count
-  { id: 'nodes-10',  check: () => window.nodesData.reduce((s, n) => s + n.count, 0) >= 10  },
-  { id: 'nodes-25',  check: () => window.nodesData.reduce((s, n) => s + n.count, 0) >= 25  },
-  { id: 'nodes-50',  check: () => window.nodesData.reduce((s, n) => s + n.count, 0) >= 50  },
-  { id: 'nodes-100', check: () => window.nodesData.reduce((s, n) => s + n.count, 0) >= 100 },
+  { id: 'nodes-10',  check: () => window.nodesData.reduce((s, n) => s + n.count, 0) >= 25  },
+  { id: 'nodes-25',  check: () => window.nodesData.reduce((s, n) => s + n.count, 0) >= 75  },
+  { id: 'nodes-50',  check: () => window.nodesData.reduce((s, n) => s + n.count, 0) >= 150 },
+  { id: 'nodes-100', check: () => window.nodesData.reduce((s, n) => s + n.count, 0) >= 350 },
 
   // Upgrades
-  { id: 'upgrade-first', check: () => (window.upgradesData?.filter(u => u.purchased).length || 0) >= 1  },
-  { id: 'upgrade-5',     check: () => (window.upgradesData?.filter(u => u.purchased).length || 0) >= 5  },
-  { id: 'upgrade-10',    check: () => (window.upgradesData?.filter(u => u.purchased).length || 0) >= 10 },
+  { id: 'upgrade-first', check: () => (window.upgradesData?.filter(u => u.purchased).length || 0) >= 3  },
+  { id: 'upgrade-5',     check: () => (window.upgradesData?.filter(u => u.purchased).length || 0) >= 10 },
+  { id: 'upgrade-10',    check: () => (window.upgradesData?.filter(u => u.purchased).length || 0) >= 20 },
   { id: 'upgrade-all',   check: () => !!(window.upgradesData?.length && window.upgradesData.every(u => u.purchased)) },
 
   // Tick speed
@@ -239,27 +239,27 @@ const achievementConditions = [
 
   // Prestige
   { id: 'prestige-first', check: () => prestige >= 1 },
-  { id: 'prestige-5',     check: () => prestige >= 5 },
+  { id: 'prestige-5',     check: () => prestige >= 8 },
 
   // Special
   { id: 'idle-explorer', check: () => (Date.now() - (window.gameLoadTime || Date.now())) >= 600_000 },
-  { id: 'void-rich',     check: () => voidenergy >= 1_000_000 },
-  { id: 'hold-100m',     check: () => voidenergy >= 100_000_000 },
-  { id: 'hold-1b',       check: () => voidenergy >= 1_000_000_000 },
-  { id: 'hold-1t',       check: () => voidenergy >= 1e12 },
-  { id: 'hold-1q',       check: () => voidenergy >= 1e15 },
+  { id: 'void-rich',     check: () => voidenergy >= 5_000_000 },
+  { id: 'hold-100m',     check: () => voidenergy >= 500_000_000 },
+  { id: 'hold-1b',       check: () => voidenergy >= 10_000_000_000 },
+  { id: 'hold-1t',       check: () => voidenergy >= 5e12 },
+  { id: 'hold-1q',       check: () => voidenergy >= 5e15 },
   { id: 'idle-30min',    check: () => (Date.now() - (window.gameLoadTime || Date.now())) >= 1_800_000 },
   { id: 'idle-1hr',      check: () => (Date.now() - (window.gameLoadTime || Date.now())) >= 3_600_000 },
   { id: 'void-sage',     check: () => ((window.lifetimePlaytimeBase || 0) + (Date.now() - (window.sessionStartTime || Date.now()))) >= 36_000_000 },
-  { id: 'node-all-types',  check: () => window.nodesData.every(n => n.count >= 1) },
-  { id: 'void-symphony',   check: () => window.nodesData.every(n => n.count >= 5) },
-  { id: 'void-colossus',   check: () => window.nodesData.every(n => n.count >= 25) },
-  { id: 'first-combo',   check: () => (window.totalCombos   || 0) >= 1 },
-  { id: 'first-crit',    check: () => (window.totalCrits    || 0) >= 1 },
-  { id: 'first-cascade', check: () => (window.totalCascades || 0) >= 1 },
-  { id: 'combo-50',      check: () => (window.totalCombos   || 0) >= 50 },
-  { id: 'crit-50',       check: () => (window.totalCrits    || 0) >= 50 },
-  { id: 'cascade-50',    check: () => (window.totalCascades || 0) >= 50 },
+  { id: 'node-all-types',  check: () => window.nodesData.every(n => n.count >= 3) },
+  { id: 'void-symphony',   check: () => window.nodesData.every(n => n.count >= 15) },
+  { id: 'void-colossus',   check: () => window.nodesData.every(n => n.count >= 50) },
+  { id: 'first-combo',   check: () => (window.totalCombos   || 0) >= 5 },
+  { id: 'first-crit',    check: () => (window.totalCrits    || 0) >= 5 },
+  { id: 'first-cascade', check: () => (window.totalCascades || 0) >= 5 },
+  { id: 'combo-50',      check: () => (window.totalCombos   || 0) >= 200 },
+  { id: 'crit-50',       check: () => (window.totalCrits    || 0) >= 200 },
+  { id: 'cascade-50',    check: () => (window.totalCascades || 0) >= 200 },
   { id: 'legendary',     check: () => !!(window.orbsData?.every(o => o.owned) && window.upgradesData?.every(u => u.purchased)) },
 
   // More Void Energy milestones
@@ -270,37 +270,37 @@ const achievementConditions = [
   { id: 've-1sx',  check: () => lifetimeVE.gte('1e21') },
 
   // More clicking milestones
-  { id: 'click-500',  check: () => window.totalClicks >= 500 },
-  { id: 'click-5k',   check: () => window.totalClicks >= 5_000 },
-  { id: 'click-100k', check: () => window.totalClicks >= 100_000 },
-  { id: 'click-250k', check: () => window.totalClicks >= 250_000 },
-  { id: 'click-500k', check: () => window.totalClicks >= 500_000 },
-  { id: 'click-1m',   check: () => window.totalClicks >= 1_000_000 },
+  { id: 'click-500',  check: () => window.totalClicks >= 750 },
+  { id: 'click-5k',   check: () => window.totalClicks >= 7_500 },
+  { id: 'click-100k', check: () => window.totalClicks >= 150_000 },
+  { id: 'click-250k', check: () => window.totalClicks >= 350_000 },
+  { id: 'click-500k', check: () => window.totalClicks >= 750_000 },
+  { id: 'click-1m',   check: () => window.totalClicks >= 1_500_000 },
 
   // Node counts per type
-  { id: 'abyssal-10',    check: () => (window.nodesData.find(n => n.id === 'abyssalshard')?.count    || 0) >= 10 },
-  { id: 'abyssal-25',    check: () => (window.nodesData.find(n => n.id === 'abyssalshard')?.count    || 0) >= 25 },
-  { id: 'whisper-10',    check: () => (window.nodesData.find(n => n.id === 'whisperengine')?.count   || 0) >= 10 },
-  { id: 'whisper-25',    check: () => (window.nodesData.find(n => n.id === 'whisperengine')?.count   || 0) >= 25 },
-  { id: 'darkmatter-10', check: () => (window.nodesData.find(n => n.id === 'darkmatterloop')?.count  || 0) >= 10 },
-  { id: 'darkmatter-25', check: () => (window.nodesData.find(n => n.id === 'darkmatterloop')?.count  || 0) >= 25 },
-  { id: 'voidbloom-10',  check: () => (window.nodesData.find(n => n.id === 'voidbloom')?.count       || 0) >= 10 },
-  { id: 'voidbloom-25',  check: () => (window.nodesData.find(n => n.id === 'voidbloom')?.count       || 0) >= 25 },
-  { id: 'graviton-10',   check: () => (window.nodesData.find(n => n.id === 'gravitonseeder')?.count  || 0) >= 10 },
-  { id: 'graviton-25',   check: () => (window.nodesData.find(n => n.id === 'gravitonseeder')?.count  || 0) >= 25 },
+  { id: 'abyssal-10',    check: () => (window.nodesData.find(n => n.id === 'abyssalshard')?.count    || 0) >= 25 },
+  { id: 'abyssal-25',    check: () => (window.nodesData.find(n => n.id === 'abyssalshard')?.count    || 0) >= 75 },
+  { id: 'whisper-10',    check: () => (window.nodesData.find(n => n.id === 'whisperengine')?.count   || 0) >= 20 },
+  { id: 'whisper-25',    check: () => (window.nodesData.find(n => n.id === 'whisperengine')?.count   || 0) >= 60 },
+  { id: 'darkmatter-10', check: () => (window.nodesData.find(n => n.id === 'darkmatterloop')?.count  || 0) >= 18 },
+  { id: 'darkmatter-25', check: () => (window.nodesData.find(n => n.id === 'darkmatterloop')?.count  || 0) >= 50 },
+  { id: 'voidbloom-10',  check: () => (window.nodesData.find(n => n.id === 'voidbloom')?.count       || 0) >= 15 },
+  { id: 'voidbloom-25',  check: () => (window.nodesData.find(n => n.id === 'voidbloom')?.count       || 0) >= 40 },
+  { id: 'graviton-10',   check: () => (window.nodesData.find(n => n.id === 'gravitonseeder')?.count  || 0) >= 12 },
+  { id: 'graviton-25',   check: () => (window.nodesData.find(n => n.id === 'gravitonseeder')?.count  || 0) >= 35 },
   { id: 'nullbeacon-10', check: () => (window.nodesData.find(n => n.id === 'nullbeacon')?.count      || 0) >= 10 },
-  { id: 'nullbeacon-25', check: () => (window.nodesData.find(n => n.id === 'nullbeacon')?.count      || 0) >= 25 },
-  { id: 'oblivion-10',   check: () => (window.nodesData.find(n => n.id === 'oblivionspire')?.count   || 0) >= 10 },
+  { id: 'nullbeacon-25', check: () => (window.nodesData.find(n => n.id === 'nullbeacon')?.count      || 0) >= 30 },
+  { id: 'oblivion-10',   check: () => (window.nodesData.find(n => n.id === 'oblivionspire')?.count   || 0) >= 8 },
   { id: 'oblivion-25',   check: () => (window.nodesData.find(n => n.id === 'oblivionspire')?.count   || 0) >= 25 },
 
   // More total node milestones
-  { id: 'nodes-200',  check: () => window.nodesData.reduce((s, n) => s + n.count, 0) >= 200  },
-  { id: 'nodes-500',  check: () => window.nodesData.reduce((s, n) => s + n.count, 0) >= 500  },
-  { id: 'nodes-1000', check: () => window.nodesData.reduce((s, n) => s + n.count, 0) >= 1000 },
+  { id: 'nodes-200',  check: () => window.nodesData.reduce((s, n) => s + n.count, 0) >= 500  },
+  { id: 'nodes-500',  check: () => window.nodesData.reduce((s, n) => s + n.count, 0) >= 1000 },
+  { id: 'nodes-1000', check: () => window.nodesData.reduce((s, n) => s + n.count, 0) >= 2500 },
 
   // More upgrade milestones
-  { id: 'upgrade-25',   check: () => (window.upgradesData?.filter(u => u.purchased).length || 0) >= 25 },
-  { id: 'upgrade-50',   check: () => (window.upgradesData?.filter(u => u.purchased).length || 0) >= 50 },
+  { id: 'upgrade-25',   check: () => (window.upgradesData?.filter(u => u.purchased).length || 0) >= 35 },
+  { id: 'upgrade-50',   check: () => (window.upgradesData?.filter(u => u.purchased).length || 0) >= 60 },
   { id: 'upgrade-tree', check: () => {
     if (!window.upgradesData) return false;
     const nodes = [...new Set(window.upgradesData.map(u => u.targetNode))];
@@ -529,6 +529,12 @@ function startIdleGeneration() {
   }
   if (window._tickProgressRaf) cancelAnimationFrame(window._tickProgressRaf);
   window._tickProgressRaf = requestAnimationFrame(tickProgressLoop);
+
+  // Auto-save every 30 seconds
+  if (window._autoSaveInterval) clearInterval(window._autoSaveInterval);
+  window._autoSaveInterval = setInterval(() => {
+    try { saveGame(); } catch (e) { console.error('[Auto-save error]', e); }
+  }, 30_000);
 }
 
 // === Persistence ===
@@ -641,44 +647,10 @@ function loadGame() {
 
 function resetGame() {
   localStorage.removeItem('save');
-  voidenergy = 0;
-  lifetimeVE = new Decimal(0);
-  prestige   = 0;
-
-  window.nodesData.forEach(n => {
-    n.count = 0;
-    n.cost  = new Decimal(n.baseCost);
-    delete n.productionMultiplier;
-  });
-
-  window.tickSpeedReduction     = 0;
-  window.clickUpgradeMultiplier = 1;
-  window.achievementProdBonus   = 0;
-  window.achievementClickBonus  = 0;
-  window.totalClicks            = 0;
-  window.tickStartTime          = Date.now();
-  window.lifetimePlaytimeBase   = 0;
-  window.sessionStartTime       = Date.now();
-
-  // Reset orbs — only Void Core remains owned/equipped
-  if (window.orbAutoClickInterval) {
-    clearInterval(window.orbAutoClickInterval);
-    window.orbAutoClickInterval = null;
-  }
-  (window.orbsData || []).forEach(orb => { orb.owned = (orb.id === 'void-core'); });
-  window.equippedOrbId = 'void-core';
-  window.orbComboCount = 0;
-
-  if (window.upgradesData) {
-    window.upgradesData.forEach(u => { u.purchased = false; });
-  }
-
-  if (window.achievementsData) {
-    window.achievementsData.forEach(a => { a.unlocked = false; a.claimed = false; });
-  }
-
-  refreshNodeStats();
-  changePage('home');
+  localStorage.removeItem('playerName');
+  localStorage.removeItem(USED_NAMES_KEY);
+  localStorage.removeItem('tutorialComplete');
+  location.reload();
 }
 
 // === Page Navigation ===
@@ -701,10 +673,14 @@ function changePage(page) {
     const fn     = window[fnName];
     if (typeof fn === 'function') fn(content);
     refreshNodeStats();
-    // Inject footer at the bottom of every page
-    const footer = document.createElement('footer');
-    footer.innerHTML = `<p>&copy; ${new Date().getFullYear()} VoidByte Studio. All rights reserved.</p>`;
-    content.appendChild(footer);
+    // Ensure persistent footer exists (created once, lives outside content)
+    if (!document.getElementById('game-footer')) {
+      const footer = document.createElement('footer');
+      footer.id = 'game-footer';
+      footer.className = 'game-footer';
+      footer.innerHTML = `<span>&copy; ${new Date().getFullYear()} VoidByte Studio</span><span>v0.0.7</span>`;
+      document.body.appendChild(footer);
+    }
   };
   document.body.appendChild(script);
 }
@@ -727,12 +703,68 @@ function saveName(name) {
 
 function createCharacter() {
   const stored = localStorage.getItem('playerName');
-  if (stored && stored.trim()) return;
-  let name;
-  do {
-    name = prompt('Enter a unique character name:');
-  } while (!isNameValid(name));
-  saveName(name);
+  if (stored && stored.trim()) return Promise.resolve();
+
+  return new Promise((resolve) => {
+    const modal     = document.getElementById('ts-name-modal');
+    const input     = document.getElementById('ts-name-input');
+    const error     = document.getElementById('ts-name-error');
+    const confirmBtn = document.getElementById('ts-name-confirm');
+    if (!modal || !input || !confirmBtn) { resolve(); return; }
+
+    modal.style.display = '';
+    input.value = '';
+    if (error) error.textContent = '';
+    confirmBtn.disabled = true;
+    setTimeout(() => input.focus(), 100);
+
+    function validate() {
+      const val = input.value.trim();
+      if (!val) {
+        confirmBtn.disabled = true;
+        if (error) error.textContent = '';
+        input.classList.remove('ts-input-error');
+        return;
+      }
+      if (val.length < 2) {
+        confirmBtn.disabled = true;
+        if (error) error.textContent = 'Name must be at least 2 characters';
+        input.classList.add('ts-input-error');
+        return;
+      }
+      const used = JSON.parse(localStorage.getItem(USED_NAMES_KEY)) || [];
+      if (used.includes(val.toLowerCase())) {
+        confirmBtn.disabled = true;
+        if (error) error.textContent = 'That name has already been used';
+        input.classList.add('ts-input-error');
+        return;
+      }
+      confirmBtn.disabled = false;
+      if (error) error.textContent = '';
+      input.classList.remove('ts-input-error');
+    }
+
+    function submit() {
+      const val = input.value.trim();
+      if (!val || val.length < 2) return;
+      const used = JSON.parse(localStorage.getItem(USED_NAMES_KEY)) || [];
+      if (used.includes(val.toLowerCase())) return;
+      saveName(val);
+      modal.style.display = 'none';
+      input.removeEventListener('input', validate);
+      input.removeEventListener('keydown', onKey);
+      confirmBtn.removeEventListener('click', submit);
+      resolve();
+    }
+
+    function onKey(e) {
+      if (e.key === 'Enter' && !confirmBtn.disabled) submit();
+    }
+
+    input.addEventListener('input', validate);
+    input.addEventListener('keydown', onKey);
+    confirmBtn.addEventListener('click', submit);
+  });
 }
 
 // === Initialization ===
@@ -803,30 +835,261 @@ function initParticleCanvas() {
 }
 
 window.onload = () => {
-  window.gameLoadTime     = Date.now();
-  window.sessionStartTime = Date.now(); // set once; never reset mid-session
-  initParticleCanvas();
+  // Hide game UI until title screen is dismissed
+  const header  = document.querySelector('header');
+  const nav     = document.getElementById('main-nav');
+  const content = document.getElementById('content');
+  if (header)  header.style.display  = 'none';
+  if (nav)     nav.style.display     = 'none';
+  if (content) content.style.display = 'none';
 
-  // Inject icons + labels into nav buttons
-  const NAV_ICONS = {
-    home: 'home', nodes: 'nodes', upgrades: 'upgrades', shop: 'shop',
-    automation: 'automation', prestige: 'prestige', stats: 'stats',
-    achievements: 'achievements', leaderboard: 'leaderboard', settings: 'settings'
-  };
-  const NAV_LABELS = {
-    home: 'Home', nodes: 'Nodes', upgrades: 'Upgrades', shop: 'Shop',
-    automation: 'Auto', prestige: 'Prestige', stats: 'Stats',
-    achievements: 'Achieve', leaderboard: 'Ranks', settings: 'Settings'
-  };
-  document.querySelectorAll('nav button[data-page]').forEach(btn => {
-    const page = btn.dataset.page;
-    const icon = (window.GameIcons && window.GameIcons[NAV_ICONS[page]]) || '';
-    btn.innerHTML = `${icon}<span class="nav-label">${NAV_LABELS[page] || page}</span>`;
-  });
+  const titleScreen = document.getElementById('title-screen');
+  const tsMenu      = document.getElementById('ts-menu');
+  const hasSave     = !!(localStorage.getItem('save') || localStorage.getItem('playerName'));
 
-  createCharacter();
-  loadGame();
-  changePage('home');
-  startIdleGeneration();
+  // ── Build menu based on save state ──
+  if (tsMenu) {
+    if (hasSave) {
+      tsMenu.innerHTML = `
+        <button class="ts-btn-primary" data-action="continue">Continue</button>
+        <button class="ts-btn-secondary ts-btn-danger" data-action="new-game">New Game</button>
+        <button class="ts-btn-secondary" data-action="settings">Settings</button>
+      `;
+    } else {
+      tsMenu.innerHTML = `
+        <button class="ts-btn-primary" data-action="new-game">New Game</button>
+        <button class="ts-btn-secondary" data-action="settings">Settings</button>
+      `;
+    }
+    // Settings panel elements
+    const tsSettings  = document.getElementById('ts-settings');
+    const tsBgAnim    = document.getElementById('ts-bg-anim');
+    const tsClickFx   = document.getElementById('ts-click-fx');
+    const tsBgSound   = document.getElementById('ts-bg-sound');
+    const tsVolSlider = document.getElementById('ts-vol-slider');
+    const tsVolVal    = document.getElementById('ts-vol-val');
+    const tsBack      = document.getElementById('ts-settings-back');
+
+    // Init settings controls from localStorage
+    if (tsBgAnim)    tsBgAnim.checked    = localStorage.getItem('bgAnimationEnabled') !== 'false';
+    if (tsClickFx)   tsClickFx.checked   = localStorage.getItem('clickEffectsEnabled') !== 'false';
+    if (tsBgSound)   tsBgSound.checked   = localStorage.getItem('bgSoundEnabled') !== 'false';
+    const storedVol = Math.round((parseFloat(localStorage.getItem('bgSoundVolume')) || 0.1) * 100);
+    if (tsVolSlider) tsVolSlider.value    = storedVol;
+    if (tsVolVal)    tsVolVal.textContent = storedVol;
+
+    // Settings change handlers
+    if (tsBgAnim) tsBgAnim.addEventListener('change', () => {
+      localStorage.setItem('bgAnimationEnabled', tsBgAnim.checked);
+    });
+    if (tsClickFx) tsClickFx.addEventListener('change', () => {
+      localStorage.setItem('clickEffectsEnabled', tsClickFx.checked);
+    });
+    if (tsBgSound) tsBgSound.addEventListener('change', () => {
+      localStorage.setItem('bgSoundEnabled', tsBgSound.checked);
+      window.backgroundSoundEnabled = tsBgSound.checked;
+      if (tsBgSound.checked) {
+        window.bgAudio && window.bgAudio.play().catch(() => {});
+      } else {
+        window.bgAudio && window.bgAudio.pause();
+      }
+    });
+    if (tsVolSlider) tsVolSlider.addEventListener('input', () => {
+      const vol = tsVolSlider.value / 100;
+      localStorage.setItem('bgSoundVolume', vol);
+      if (window.bgAudio) window.bgAudio.volume = vol;
+      if (tsVolVal) tsVolVal.textContent = tsVolSlider.value;
+    });
+
+    // New game confirmation modal elements
+    const newGameModal   = document.getElementById('ts-newgame-modal');
+    const confirmCheck   = document.getElementById('ts-confirm-check');
+    const modalConfirm   = document.getElementById('ts-modal-confirm');
+    const modalCancel    = document.getElementById('ts-modal-cancel');
+
+    // Checkbox enables/disables the confirm button
+    if (confirmCheck && modalConfirm) {
+      confirmCheck.addEventListener('change', () => {
+        modalConfirm.disabled = !confirmCheck.checked;
+      });
+    }
+
+    // Cancel closes the modal
+    if (modalCancel) modalCancel.addEventListener('click', () => {
+      if (newGameModal) newGameModal.style.display = 'none';
+      if (confirmCheck) confirmCheck.checked = false;
+      if (modalConfirm) modalConfirm.disabled = true;
+    });
+
+    // Confirm erases and starts
+    if (modalConfirm) modalConfirm.addEventListener('click', () => {
+      if (newGameModal) newGameModal.style.display = 'none';
+      localStorage.removeItem('save');
+      localStorage.removeItem('playerName');
+      localStorage.removeItem(USED_NAMES_KEY);
+      localStorage.removeItem('tutorialComplete');
+      startGame(true);
+    });
+
+    tsMenu.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-action]');
+      if (!btn) return;
+      const action = btn.dataset.action;
+      if (action === 'continue')  startGame(false);
+      if (action === 'new-game') {
+        if (hasSave) {
+          // Show confirmation modal
+          if (confirmCheck) confirmCheck.checked = false;
+          if (modalConfirm) modalConfirm.disabled = true;
+          if (newGameModal) newGameModal.style.display = '';
+        } else {
+          localStorage.removeItem('save');
+          localStorage.removeItem('playerName');
+          localStorage.removeItem(USED_NAMES_KEY);
+          localStorage.removeItem('tutorialComplete');
+          startGame(true);
+        }
+      }
+      if (action === 'settings') {
+        tsMenu.style.display = 'none';
+        if (tsSettings) tsSettings.style.display = '';
+      }
+    });
+
+    // Back button returns to menu
+    if (tsBack) tsBack.addEventListener('click', () => {
+      if (tsSettings) tsSettings.style.display = 'none';
+      tsMenu.style.display = '';
+    });
+  }
+
+  // ── Title screen music — start on first user interaction ──
+  // Browsers require a user gesture before audio can play.
+  function tryPlayTitleMusic() {
+    if (window.backgroundSoundEnabled && window.bgAudio && window.bgAudio.paused) {
+      window.bgAudio.play().catch(() => {});
+    }
+    document.removeEventListener('click', tryPlayTitleMusic);
+    document.removeEventListener('keydown', tryPlayTitleMusic);
+    document.removeEventListener('touchstart', tryPlayTitleMusic);
+  }
+  document.addEventListener('click', tryPlayTitleMusic, { once: false });
+  document.addEventListener('keydown', tryPlayTitleMusic, { once: false });
+  document.addEventListener('touchstart', tryPlayTitleMusic, { once: false });
+
+  // ── Floating dust particles on title screen ──
+  (function initTsParticles() {
+    const canvas = document.getElementById('ts-particles');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let w, h;
+    function resize() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const DUST_COUNT = 50;
+    const dust = Array.from({ length: DUST_COUNT }, () => ({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      r: Math.random() * 1.5 + 0.3,
+      dx: (Math.random() - 0.5) * 0.3,
+      dy: (Math.random() - 0.5) * 0.2 - 0.1,
+      o: Math.random() * 0.4 + 0.1,
+      hue: Math.random() > 0.5 ? '255,106,255' : '102,255,250',
+    }));
+
+    let animId;
+    function tick() {
+      ctx.clearRect(0, 0, w, h);
+      for (const p of dust) {
+        p.x += p.dx;
+        p.y += p.dy;
+        if (p.x < -10) p.x = w + 10;
+        if (p.x > w + 10) p.x = -10;
+        if (p.y < -10) p.y = h + 10;
+        if (p.y > h + 10) p.y = -10;
+        ctx.globalAlpha = p.o;
+        ctx.fillStyle = `rgba(${p.hue},${p.o})`;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      animId = requestAnimationFrame(tick);
+    }
+    tick();
+    window._tsDustCleanup = () => { cancelAnimationFrame(animId); };
+  })();
+
+  // ── Start Game ──
+  async function startGame(isNew, goToPage) {
+    if (window._gameStarted) return;
+    window._gameStarted = true;
+
+    // If new game, show name modal before proceeding
+    if (isNew) {
+      await createCharacter();
+    }
+
+    // Remove title music listeners so they can't fire after this point
+    document.removeEventListener('click', tryPlayTitleMusic);
+    document.removeEventListener('keydown', tryPlayTitleMusic);
+    document.removeEventListener('touchstart', tryPlayTitleMusic);
+
+    // Stop title screen particles
+    if (window._tsDustCleanup) window._tsDustCleanup();
+
+    // Stop title screen music immediately
+    if (window.bgAudio) {
+      window.bgAudio.pause();
+      window.bgAudio.currentTime = 0;
+      window.bgAudio.volume = parseFloat(localStorage.getItem('bgSoundVolume')) || 0.1;
+    }
+
+    // Fade out title screen
+    if (titleScreen) titleScreen.classList.add('ts-hidden');
+
+    // Show game UI
+    if (header)  header.style.display  = '';
+    if (nav)     nav.style.display     = '';
+    if (content) content.style.display = '';
+
+    // Initialize the game
+    window.gameLoadTime     = Date.now();
+    window.sessionStartTime = Date.now();
+    initParticleCanvas();
+
+    // Inject icons + labels into nav buttons
+    const NAV_ICONS = {
+      home: 'home', nodes: 'nodes', upgrades: 'upgrades', shop: 'shop',
+      automation: 'automation', prestige: 'prestige', stats: 'stats',
+      achievements: 'achievements', leaderboard: 'leaderboard', settings: 'settings'
+    };
+    const NAV_LABELS = {
+      home: 'Home', nodes: 'Nodes', upgrades: 'Upgrades', shop: 'Shop',
+      automation: 'Auto', prestige: 'Prestige', stats: 'Stats',
+      achievements: 'Achieve', leaderboard: 'Ranks', settings: 'Settings'
+    };
+    document.querySelectorAll('nav button[data-page]').forEach(btn => {
+      const page = btn.dataset.page;
+      const icon = (window.GameIcons && window.GameIcons[NAV_ICONS[page]]) || '';
+      btn.innerHTML = `${icon}<span class="nav-label">${NAV_LABELS[page] || page}</span>`;
+    });
+
+    if (!isNew) loadGame();
+    changePage(goToPage || 'home');
+
+    // Remove title screen from DOM after transition
+    setTimeout(() => { if (titleScreen) titleScreen.remove(); }, 700);
+
+    // For new players: run tutorial first, then start idle generation
+    if (isNew && typeof startTutorial === 'function') {
+      setTimeout(async () => {
+        await startTutorial();
+        startIdleGeneration();
+      }, 800);
+    } else {
+      startIdleGeneration();
+    }
+  }
 };
 

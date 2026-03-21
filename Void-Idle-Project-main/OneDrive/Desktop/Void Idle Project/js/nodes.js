@@ -95,7 +95,7 @@ function buyNode(nodeId) {
     node.count++;
 
     // Increase cost & update UI
-    node.cost = node.cost.mul(1.15);
+    node.cost = node.cost.mul(node.costGrowth || 1.15);
     updateDisplay(node.id, new Decimal(node.count).floor().toString());
     updateDisplay(`${node.id}Cost`, formatNumber(node.cost.ceil()));
     updateDisplay(`${node.id}Production`,

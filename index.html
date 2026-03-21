@@ -243,12 +243,12 @@
     <div id="dev-panel">
       <button id="dev-reset-btn" onclick="if(confirm('DEV: Reset all game data?')) { resetGame(); }"
         title="Dev Reset">&#x21BA; Reset</button>
-      <div id="dev-add-ve">
+      <!-- <div id="dev-add-ve">
         <input id="dev-ve-input" type="number" min="1" placeholder="VE amount" />
         <button
           onclick="(function(){ const v=Number(document.getElementById('dev-ve-input').value); if(!v||v<=0) return; voidenergy=Math.ceil(voidenergy+v); lifetimeVE=lifetimeVE.plus(v); updateDisplay('voidenergy',voidenergy); if(typeof updateHomeDynamic==='function') updateHomeDynamic(); })()">+
           Add VE</button>
-      </div>
+      </div> -->
     </div>
   </header>
 

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Void Idle</title>
+
+  <!-- New sci-fi font -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet" />
+
+  <!-- Main interface styles -->
+  <link rel="stylesheet" href="css/interface.css?v=4" />
+
+  <!-- Home page styles -->
+  <link rel="stylesheet" href="css/home.css" />
+
+  <!-- Nodes page styles -->
+  <link rel="stylesheet" href="css/nodes.css">
+
+  <!-- Stats page styles -->
+  <link rel="stylesheet" href="css/stats.css">
+
+  <!-- Achievements page styles -->
+  <link rel="stylesheet" href="css/achievements.css">
+
+  <!-- Settings page styles-->
+  <link rel="stylesheet" href="css/settings.css">
+
+  <!-- Prestige page styles -->
+  <link rel="stylesheet" href="css/prestige.css">
+
+  <!-- Shop page styles -->
+  <link rel="stylesheet" href="css/shop.css">
+
+  <!-- Title screen styles -->
+  <link rel="stylesheet" href="css/titlescreen.css">
+
+  <!-- Tutorial styles -->
+  <link rel="stylesheet" href="css/tutorial.css">
+
+
+  <!-- Load break_infinity.js first -->
+  <script src="https://cdn.jsdelivr.net/npm/break_infinity.js@2" defer></script>
+</head>
+
+<body>
+  <!-- ── Title Screen Overlay ── -->
+  <div id="title-screen">
+    <div class="ts-stars"></div>
+    <div class="ts-content">
+      <div class="ts-orb-wrap">
+        <div class="ts-ambient-ring ts-ambient-1"></div>
+        <div class="ts-ambient-ring ts-ambient-2"></div>
+        <div class="ts-ambient-ring ts-ambient-3"></div>
+        <svg class="ts-orb" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="ts-pk" x1="0" y1="0" x2="200" y2="200" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#ff6aff" />
+              <stop offset="100%" stop-color="#66fffa" />
+            </linearGradient>
+            <linearGradient id="ts-tl" x1="200" y1="0" x2="0" y2="200" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#66fffa" />
+              <stop offset="100%" stop-color="#ff6aff" />
+            </linearGradient>
+            <filter id="ts-glow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="3.5" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+            <filter id="ts-glow-strong" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur stdDeviation="6" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+            <radialGradient id="ts-core-grad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="1" />
+              <stop offset="25%" stop-color="#eeccff" stop-opacity="0.9" />
+              <stop offset="50%" stop-color="#ff6aff" stop-opacity="0.6" />
+              <stop offset="100%" stop-color="#66fffa" stop-opacity="0" />
+            </radialGradient>
+            <radialGradient id="ts-void-bg" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#1b003b" stop-opacity="0.9" />
+              <stop offset="70%" stop-color="#010012" stop-opacity="0.6" />
+              <stop offset="100%" stop-color="#010012" stop-opacity="0" />
+            </radialGradient>
+          </defs>
+
+          <!-- Outer halo — slow dashed orbit -->
+          <circle cx="100" cy="100" r="94" stroke="url(#ts-pk)" stroke-width="0.5" opacity="0.15" stroke-dasharray="3 6"
+            class="ts-halo" />
+          <circle cx="100" cy="100" r="88" stroke="url(#ts-tl)" stroke-width="0.4" opacity="0.1" stroke-dasharray="2 8"
+            class="ts-halo-2" />
+
+          <!-- Orbital rings — different ellipse ratios for depth -->
+          <ellipse cx="100" cy="100" rx="72" ry="24" stroke="url(#ts-pk)" stroke-width="1.2" opacity="0.45"
+            filter="url(#ts-glow)" class="ts-ring ts-ring-1" />
+          <ellipse cx="100" cy="100" rx="68" ry="30" stroke="url(#ts-tl)" stroke-width="1.0" opacity="0.35"
+            filter="url(#ts-glow)" class="ts-ring ts-ring-2" />
+          <ellipse cx="100" cy="100" rx="60" ry="20" stroke="url(#ts-pk)" stroke-width="0.8" opacity="0.25"
+            class="ts-ring ts-ring-3" />
+
+          <!-- Void sphere body -->
+          <circle cx="100" cy="100" r="36" fill="url(#ts-void-bg)" class="ts-sphere" />
+          <circle cx="100" cy="100" r="36" stroke="url(#ts-pk)" stroke-width="1.2" opacity="0.5" filter="url(#ts-glow)"
+            class="ts-sphere-rim" />
+
+          <!-- Inner energy ring -->
+          <circle cx="100" cy="100" r="26" stroke="url(#ts-tl)" stroke-width="0.8" opacity="0.3" stroke-dasharray="4 3"
+            class="ts-inner-ring" />
+
+          <!-- Core -->
+          <circle cx="100" cy="100" r="14" fill="url(#ts-core-grad)" filter="url(#ts-glow-strong)" class="ts-core" />
+
+          <!-- Highlight flare -->
+          <ellipse cx="92" cy="90" rx="6" ry="3.5" fill="white" opacity="0.15" transform="rotate(-30 92 90)" />
+        </svg>
+      </div>
+      <h1 class="ts-title"><span class="ts-void">VOID</span><span class="ts-idle">IDLE</span></h1>
+      <p class="ts-tagline">an idle adventure in the void</p>
+      <div class="ts-menu" id="ts-menu">
+        <!-- Populated by JS based on save state -->
+      </div>
+      <div class="ts-settings" id="ts-settings" style="display:none">
+        <div class="ts-settings-hdr">Settings</div>
+        <label class="ts-setting-row">
+          <input type="checkbox" id="ts-bg-anim"> Background Animation
+        </label>
+        <label class="ts-setting-row">
+          <input type="checkbox" id="ts-click-fx"> Click Effects
+        </label>
+        <label class="ts-setting-row">
+          <input type="checkbox" id="ts-bg-sound"> Title Screen Music
+        </label>
+        <label class="ts-setting-row">
+          Music Volume: <span id="ts-vol-val">10</span>%
+          <input type="range" id="ts-vol-slider" min="0" max="100" value="10" class="ts-slider">
+        </label>
+        <button class="ts-btn-secondary ts-settings-back" id="ts-settings-back">Back</button>
+      </div>
+    </div>
+    <!-- Character name modal -->
+    <div class="ts-modal-overlay" id="ts-name-modal" style="display:none">
+      <div class="ts-modal">
+        <div class="ts-modal-title ts-modal-title-accent">Enter the Void</div>
+        <p class="ts-modal-body">Choose a name for your character. This will be your identity across all runs.</p>
+        <div class="ts-name-field">
+          <input type="text" id="ts-name-input" class="ts-name-input" placeholder="Character name..." maxlength="20"
+            autocomplete="off" spellcheck="false">
+          <p class="ts-name-error" id="ts-name-error"></p>
+        </div>
+        <div class="ts-modal-actions">
+          <button class="ts-btn-primary ts-btn-name-confirm" id="ts-name-confirm" disabled>Begin</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- New Game confirmation modal -->
+    <div class="ts-modal-overlay" id="ts-newgame-modal" style="display:none">
+      <div class="ts-modal">
+        <div class="ts-modal-title">Start New Game?</div>
+        <p class="ts-modal-body">This will <strong>permanently erase</strong> all of your current progress, including
+          Void Energy, nodes, upgrades, orbs, and achievements.</p>
+        <label class="ts-modal-check">
+          <input type="checkbox" id="ts-confirm-check">
+          I understand my save data will be deleted
+        </label>
+        <div class="ts-modal-actions">
+          <button class="ts-btn-secondary" id="ts-modal-cancel">Cancel</button>
+          <button class="ts-btn-primary ts-btn-confirm-delete" id="ts-modal-confirm" disabled>Erase &amp; Start
+            New</button>
+        </div>
+      </div>
+    </div>
+    <div class="ts-footer-left">&copy; 2026 VoidByte Studio</div>
+    <div class="ts-version">v0.0.7</div>
+    <canvas id="ts-particles"></canvas>
+  </div>
+
+  <header>
+    <div class="game-title">
+
+      <!-- Void portal emblem -->
+      <svg class="title-orb" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="tg-pk" x1="0" y1="0" x2="80" y2="80" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#ff6aff" />
+            <stop offset="100%" stop-color="#66fffa" />
+          </linearGradient>
+          <linearGradient id="tg-tl" x1="80" y1="0" x2="0" y2="80" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#66fffa" />
+            <stop offset="100%" stop-color="#ff6aff" />
+          </linearGradient>
+          <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="2.5" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+
+        <!-- Outer halo ring -->
+        <circle cx="40" cy="40" r="36" stroke="url(#tg-pk)" stroke-width="0.8" opacity="0.3" stroke-dasharray="4 3" />
+
+        <!-- Three orbital ellipses -->
+        <ellipse cx="40" cy="40" rx="30" ry="11" stroke="url(#tg-pk)" stroke-width="1.2" opacity="0.65"
+          filter="url(#glow)" />
+        <ellipse cx="40" cy="40" rx="30" ry="11" stroke="url(#tg-tl)" stroke-width="1.2" opacity="0.65"
+          transform="rotate(60 40 40)" filter="url(#glow)" />
+        <ellipse cx="40" cy="40" rx="30" ry="11" stroke="url(#tg-pk)" stroke-width="1.1" opacity="0.40"
+          transform="rotate(-60 40 40)" />
+
+        <!-- Hex crystal frame -->
+        <polygon points="40,18 54,28 54,52 40,62 26,52 26,28" stroke="url(#tg-tl)" stroke-width="1.3" opacity="0.55" />
+
+        <!-- Inner facet lines -->
+        <line x1="40" y1="18" x2="40" y2="62" stroke="url(#tg-pk)" stroke-width="0.7" opacity="0.25" />
+        <line x1="26" y1="28" x2="54" y2="52" stroke="url(#tg-pk)" stroke-width="0.7" opacity="0.25" />
+        <line x1="54" y1="28" x2="26" y2="52" stroke="url(#tg-pk)" stroke-width="0.7" opacity="0.25" />
+
+        <!-- Core ring -->
+        <circle cx="40" cy="40" r="9" stroke="url(#tg-pk)" stroke-width="1.6" opacity="0.9" filter="url(#glow)" />
+
+        <!-- Core fill -->
+        <circle cx="40" cy="40" r="4.5" fill="url(#tg-tl)" opacity="0.95" filter="url(#glow)" />
+      </svg>
+
+      <!-- Wordmark + tagline grouped beside the orb -->
+      <div class="title-text-group">
+        <div class="title-wordmark">
+          <span class="title-void">VOID</span><span class="title-idle">IDLE</span>
+        </div>
+        <p class="title-sub">an idle adventure in the void</p>
+      </div>
+
+    </div>
+    <div id="dev-panel">
+      <button id="dev-reset-btn" onclick="if(confirm('DEV: Reset all game data?')) { resetGame(); }"
+        title="Dev Reset">&#x21BA; Reset</button>
+      <div id="dev-add-ve">
+        <input id="dev-ve-input" type="number" min="1" placeholder="VE amount" />
+        <button
+          onclick="(function(){ const v=Number(document.getElementById('dev-ve-input').value); if(!v||v<=0) return; voidenergy=Math.ceil(voidenergy+v); lifetimeVE=lifetimeVE.plus(v); updateDisplay('voidenergy',voidenergy); if(typeof updateHomeDynamic==='function') updateHomeDynamic(); })()">+
+          Add VE</button>
+      </div>
+    </div>
+  </header>
+
+  <nav id="main-nav">
+    <button onclick="changePage('home')" data-page="home" id="nav-home"></button>
+    <button onclick="changePage('nodes')" data-page="nodes" id="nav-nodes"></button>
+    <button onclick="changePage('upgrades')" data-page="upgrades" id="nav-upgrades"></button>
+    <button onclick="changePage('shop')" data-page="shop" id="nav-shop"></button>
+    <button onclick="changePage('automation')" data-page="automation" id="nav-automation"></button>
+    <button onclick="changePage('prestige')" data-page="prestige" id="nav-prestige"></button>
+    <button onclick="changePage('stats')" data-page="stats" id="nav-stats"></button>
+    <button onclick="changePage('achievements')" data-page="achievements" id="nav-achievements"></button>
+    <button onclick="changePage('leaderboard')" data-page="leaderboard" id="nav-leaderboard"></button>
+    <button onclick="changePage('settings')" data-page="settings" id="nav-settings"></button>
+  </nav>
+
+  <main id="content">
+    <!-- Content will be dynamically loaded here -->
+  </main>
+
+  <!-- LOAD ORDER MATTERS: load your modules AFTER break_infinity -->
+  <script src="js/icons.js" defer></script>
+  <script src="js/main.js" defer></script>
+  <script src="js/nodes.js" defer></script>
+  <script src="js/upgrades.js" defer></script>
+  <script src="js/prestige.js" defer></script>
+  <script src="js/stats.js" defer></script>
+  <script src="js/achievements.js" defer></script>
+  <script src="js/settings.js" defer></script>
+  <script src="js/tutorial.js" defer></script>
+</body>
+
+</html>

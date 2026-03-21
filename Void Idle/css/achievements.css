@@ -1,0 +1,346 @@
+﻿/* achievements.css — page-specific styles only (shared layout from interface.css) */
+
+/* Header row: title + claim all */
+.ach-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.ach-page-header .page-title {
+  margin: 0;
+}
+
+/* Claim All button */
+.claim-all-btn {
+  flex-shrink: 0;
+  background: rgba(255, 106, 255, 0.1);
+  color: var(--primary);
+  border: 1px solid rgba(255, 106, 255, 0.4);
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(255, 106, 255, 0.15);
+  cursor: pointer;
+  font-family: var(--font-display), Arial, sans-serif;
+  transition: transform 0.18s, box-shadow 0.2s, background 0.2s;
+  white-space: nowrap;
+}
+
+.claim-all-btn:hover:enabled {
+  transform: translateY(-2px) scale(1.03);
+  background: rgba(255, 106, 255, 0.18);
+  box-shadow: 0 0 20px rgba(255, 106, 255, 0.35);
+}
+
+.claim-all-btn:disabled {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.3);
+  opacity: 0.7;
+  cursor: default;
+  box-shadow: none;
+}
+
+/* Scrollable list */
+.achievements-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 4px;
+  max-height: 62vh;
+  overflow-y: auto;
+  padding-right: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent) transparent;
+}
+
+.achievements-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.achievements-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.achievements-list::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 3px;
+}
+
+/* Row card */
+.achievement-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  background: rgba(4, 0, 20, 0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 106, 255, 0.18);
+  border-radius: 12px;
+  padding: 12px 16px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Per-achievement icon */
+.ach-icon-wrap {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 106, 255, 0.08);
+  border: 1px solid rgba(255, 106, 255, 0.2);
+  border-radius: 10px;
+  color: var(--primary);
+  filter: drop-shadow(0 0 4px rgba(255, 106, 255, 0.35));
+  transition: filter 0.2s, border-color 0.2s;
+}
+
+.ach-icon-locked {
+  color: var(--text);
+  filter: grayscale(100%) brightness(0.4);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.achievement-card:hover .ach-icon-wrap:not(.ach-icon-locked) {
+  filter: drop-shadow(0 0 8px rgba(255, 106, 255, 0.65));
+  border-color: var(--accent);
+}
+
+/* Category section headers */
+.ach-category-header {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  opacity: 0.75;
+  padding: 6px 4px 2px;
+  border-bottom: 1px solid rgba(102, 255, 250, 0.15);
+  margin-top: 6px;
+}
+
+/* Unlock count badge next to page title */
+.ach-count-badge {
+  font-size: 0.72rem;
+  font-family: 'Orbitron', sans-serif;
+  color: var(--accent);
+  background: rgba(102, 255, 250, 0.1);
+  border: 1px solid rgba(102, 255, 250, 0.25);
+  border-radius: 20px;
+  padding: 2px 10px;
+  margin-left: 10px;
+  vertical-align: middle;
+  letter-spacing: 0.06em;
+}
+
+.achievement-card:hover {
+  border-color: rgba(102, 255, 250, 0.45);
+  box-shadow: 0 4px 24px rgba(102, 255, 250, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.achievement-card.is-locked {
+  opacity: 0.4;
+  filter: grayscale(70%);
+}
+
+.achievement-card.is-claimed {
+  border-color: rgba(255, 255, 255, 0.12);
+  opacity: 0.55;
+}
+
+.achievement-info {
+  flex: 1;
+}
+
+.achievement-info h3 {
+  color: var(--primary);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.achievement-info p {
+  color: var(--text);
+  font-size: 0.82rem;
+  margin: 4px 0 0;
+  opacity: 0.75;
+}
+
+/* Reward badge shown on each achievement card */
+.ach-reward-badge {
+  display: inline-block;
+  margin-top: 5px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #ffe566;
+  background: rgba(255, 229, 102, 0.1);
+  border: 1px solid rgba(255, 229, 102, 0.3);
+  border-radius: 4px;
+  padding: 2px 7px;
+}
+
+.ach-reward-badge.is-claimed {
+  color: rgba(255, 255, 255, 0.25);
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Claim button */
+.claim-btn {
+  margin-left: 16px;
+  background: rgba(255, 106, 255, 0.1);
+  color: var(--primary);
+  border: 1px solid rgba(255, 106, 255, 0.38);
+  padding: 8px 14px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  border-radius: 8px;
+  box-shadow: 0 0 8px rgba(255, 106, 255, 0.15);
+  cursor: pointer;
+  font-family: var(--font-display), Arial, sans-serif;
+  transition: transform 0.18s, box-shadow 0.2s, background 0.2s;
+  white-space: nowrap;
+}
+
+.claim-btn:hover:enabled {
+  transform: translateY(-2px) scale(1.03);
+  background: rgba(255, 106, 255, 0.18);
+  box-shadow: 0 0 18px rgba(255, 106, 255, 0.35);
+}
+
+.claim-btn:disabled {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.3);
+  opacity: 0.7;
+  cursor: default;
+  box-shadow: none;
+}
+
+/* ── Achievement toast notification ─────────────────── */
+#ach-toast-container {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+  max-width: 300px;
+  width: 300px;
+}
+
+.ach-toast {
+  background: rgba(8, 0, 24, 0.94);
+  border: 1px solid var(--primary);
+  border-radius: 12px;
+  padding: 14px 16px 16px;
+  box-shadow:
+    0 0 24px rgba(255, 106, 255, 0.35),
+    0 6px 28px rgba(0, 0, 0, 0.65);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  pointer-events: none;
+  position: relative;
+  overflow: hidden;
+  animation: toast-in 0.38s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+.ach-toast.toast-out {
+  animation: toast-out 0.35s ease-in forwards;
+}
+
+.ach-toast-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ach-toast-icon {
+  flex-shrink: 0;
+  color: var(--primary);
+  filter: drop-shadow(0 0 5px rgba(255, 106, 255, 0.5));
+}
+
+.ach-toast-label {
+  font-size: 0.6rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-family: 'Orbitron', sans-serif;
+  opacity: 0.9;
+}
+
+.ach-toast-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--primary);
+  text-shadow: 0 0 12px rgba(255, 106, 255, 0.55);
+  line-height: 1.2;
+  margin-top: 2px;
+}
+
+.ach-toast-desc {
+  font-size: 0.78rem;
+  color: var(--text);
+  opacity: 0.72;
+  line-height: 1.4;
+  margin-top: 2px;
+}
+
+/* Shrinking progress bar along the bottom */
+.ach-toast-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  width: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--primary));
+  box-shadow: 0 0 8px var(--accent);
+  transform-origin: left;
+  animation: toast-bar 3.2s linear forwards;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(calc(100% + 24px));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes toast-out {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateX(calc(100% + 24px));
+  }
+}
+
+@keyframes toast-bar {
+  from {
+    transform: scaleX(1);
+  }
+
+  to {
+    transform: scaleX(0);
+  }
+}

@@ -1,0 +1,142 @@
+/* ── Tutorial Overlay ── */
+
+.tut-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(1, 0, 18, 0.35);
+  animation: tut-fade-in 0.4s ease-out;
+}
+.tut-overlay.tut-fade-out {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+@keyframes tut-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Modal — positioned by JS per step */
+.tut-modal {
+  position: fixed;
+  z-index: 10002;
+  background: linear-gradient(160deg, rgba(27, 0, 59, 0.94), rgba(1, 0, 18, 0.96));
+  border: 1px solid rgba(255, 106, 255, 0.2);
+  border-radius: 14px;
+  padding: 26px 30px 22px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow:
+    0 0 30px rgba(255, 106, 255, 0.08),
+    0 0 60px rgba(1, 0, 18, 0.4);
+}
+.tut-modal.tut-fade-out {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+/* Step indicator */
+.tut-step-indicator {
+  font-family: var(--font-display, 'Orbitron', sans-serif);
+  font-size: 0.58rem;
+  color: rgba(224, 224, 224, 0.25);
+  letter-spacing: 0.2em;
+  text-align: right;
+  margin-bottom: 6px;
+}
+
+/* Title */
+.tut-title {
+  font-family: var(--font-display, 'Orbitron', sans-serif);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #ff6aff;
+  margin-bottom: 12px;
+  text-shadow: 0 0 12px rgba(255, 106, 255, 0.3);
+}
+
+/* Body text */
+.tut-body {
+  font-family: var(--font-display, 'Orbitron', sans-serif);
+  font-size: 0.7rem;
+  color: rgba(224, 224, 224, 0.75);
+  line-height: 1.7;
+  margin-bottom: 22px;
+  min-height: 60px;
+}
+
+/* Actions row */
+.tut-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Next / Begin button */
+.tut-btn-next {
+  font-family: var(--font-display, 'Orbitron', sans-serif);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #010012;
+  background: linear-gradient(135deg, #ff6aff, #66fffa);
+  border: none;
+  border-radius: 8px;
+  padding: 10px 32px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 0 14px rgba(255, 106, 255, 0.2);
+}
+.tut-btn-next:hover {
+  transform: scale(1.04);
+  box-shadow: 0 0 22px rgba(255, 106, 255, 0.35), 0 0 44px rgba(102, 255, 250, 0.15);
+}
+.tut-btn-next:active {
+  transform: scale(0.97);
+}
+
+/* Skip button */
+.tut-btn-skip {
+  font-family: var(--font-display, 'Orbitron', sans-serif);
+  font-size: 0.65rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  color: rgba(224, 224, 224, 0.3);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 4px;
+  transition: color 0.2s ease;
+}
+.tut-btn-skip:hover {
+  color: rgba(224, 224, 224, 0.6);
+}
+
+/* ── Element highlighting — yellow glow with flash ── */
+.tut-highlight {
+  position: relative;
+  border-radius: 8px;
+  animation: tut-highlight-flash 1s ease-in-out infinite !important;
+}
+@keyframes tut-highlight-flash {
+  0% {
+    box-shadow:
+      0 0 0 2px rgba(255, 220, 60, 0.3),
+      0 0 8px rgba(255, 220, 60, 0.1),
+      0 0 16px rgba(255, 220, 60, 0.05);
+  }
+  50% {
+    box-shadow:
+      0 0 0 4px rgba(255, 220, 60, 0.7),
+      0 0 24px rgba(255, 220, 60, 0.4),
+      0 0 48px rgba(255, 220, 60, 0.15);
+  }
+  100% {
+    box-shadow:
+      0 0 0 2px rgba(255, 220, 60, 0.3),
+      0 0 8px rgba(255, 220, 60, 0.1),
+      0 0 16px rgba(255, 220, 60, 0.05);
+  }
+}

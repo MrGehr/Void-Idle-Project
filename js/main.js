@@ -699,6 +699,8 @@ async function changePage(page) {
   isNodesPageLoaded = (page === 'nodes');
   document.querySelectorAll('nav button[data-page]').forEach(btn => {
     btn.classList.toggle('nav-active', btn.dataset.page === page);
+    if (btn.dataset.page === page) btn.setAttribute('aria-current', 'page');
+    else btn.removeAttribute('aria-current');
   });
   const content = document.getElementById('content');
   content.classList.remove('wide-home');
@@ -709,7 +711,7 @@ async function changePage(page) {
       if (!pageScripts.has(page)) {
         const promise = new Promise((resolve, reject) => {
           const script = document.createElement('script');
-          script.src = `js/${page}.js`;
+          script.src = `js/${page}.js?v=9`;
           script.onload = resolve;
           script.onerror = () => {
             script.remove();
@@ -724,13 +726,14 @@ async function changePage(page) {
     }
     if (version !== navigationVersion) return;
     window[fnName](content);
+    mountQualityOfLife(page, content);
     refreshNodeStats();
     if (page === 'home' || page === 'nodes') stopProgress = startVisualLoop(updateTickProgress);
     if (!document.getElementById('game-footer')) {
       const footer = document.createElement('footer');
       footer.id = 'game-footer';
       footer.className = 'game-footer';
-      footer.innerHTML = `<span>&copy; ${new Date().getFullYear()} VoidByte Studio</span><span>v0.0.8</span>`;
+      footer.innerHTML = `<span>&copy; ${new Date().getFullYear()} VoidByte Studio</span><span>v0.0.9</span>`;
       document.body.appendChild(footer);
     }
   } catch (error) {

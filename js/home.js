@@ -4,6 +4,20 @@
 if (typeof window.changelogEntries === 'undefined') {
   window.changelogEntries = [
     {
+      version: "v0.0.9", date: "2026-09-07",
+      summary: "A calmer Home and faster access across every page",
+      sections: [
+        { tag: 'QoL', notes: [
+          "Home: actionable next moves, compact progress, and expandable loadout details",
+          "Shared resource bar, manual save, and direct relic access",
+          "Search and filters for Nodes, Upgrades, Shop, and Achievements",
+          "Remembered upgrade categories and session filters; keyboard-accessible category buttons",
+          "Readable text, responsive navigation, and reduced-motion preference",
+          "Coming-soon pages link to current features; no economy changes",
+        ] },
+      ],
+    },
+    {
       version: "v0.0.8",
       date: "2026-09-07",
       summary: "Relics: discover, awaken, and build your loadout",
@@ -208,6 +222,7 @@ function loadHomePage(content) {
 
   content.innerHTML = `
     <div class="home-root">
+      <div class="home-welcome"><span class="relic-eyebrow">Your void, at a glance</span><h2>Command center</h2><p>Build your income. Choose your next move.</p></div>
 
       <!-- ── Hero: VE counter • orb • tick bar ── -->
       <div class="home-hero">
@@ -250,14 +265,12 @@ function loadHomePage(content) {
 
         <!-- Progress -->
         <div class="home-card">
-          <div class="home-card-hdr">${gi('player')} ${playerName}</div>
+          <div class="home-card-hdr">${gi('player')} <span id="home-player-name"></span></div>
           <div class="home-card-level">Level <strong id="playerLevelLabel">1</strong></div>
           <div class="xp-bar"><div id="xpProgress" class="xp-fill" style="width:0%"></div></div>
           <p class="xp-label" id="xpText">0 / 0 XP</p>
           <ul class="home-kv-list" style="margin-top:12px">
             <li><span>Achievements</span><strong id="achievementsUnlocked">0/0</strong></li>
-            <li><span>Prestiges</span><strong id="homePrestiges">0</strong></li>
-            <li><span>Next Goal</span><strong id="homeNextMilestone" style="color:var(--accent);font-size:0.8rem">—</strong></li>
           </ul>
         </div>
 
@@ -265,7 +278,6 @@ function loadHomePage(content) {
         <div class="home-card">
           <div class="home-card-hdr">${gi('voidenergy')} Production</div>
           <ul class="home-kv-list">
-            <li><span>VE / Tick</span><strong id="homeVEPT">0</strong></li>
             <li><span>VE / Second</span><strong id="homeVEPS">0</strong></li>
             <li><span>Tick Speed</span><strong><span id="homeTickInterval">${(getTickInterval() / 1000).toFixed(1)}</span>s</strong></li>
             <li><span>Click Power</span><strong id="homeClickPower">1.00×</strong></li>
@@ -275,8 +287,7 @@ function loadHomePage(content) {
         </div>
 
         <!-- Active Bonuses -->
-        <div class="home-card">
-          <div class="home-card-hdr">${gi('orb')} Active Bonuses</div>
+        <details class="home-card home-loadout"><summary>Loadout &amp; bonuses</summary>
           <p class="home-relic-summary"><span id="homeRelics"></span> <button class="page-btn" onclick="window.shopActivePage='relics'; changePage('shop')">Relics</button></p>
           <ul class="home-kv-list">
             <li><span>Equipped Orb</span><strong id="homeActivOrbName" style="font-size:0.8rem">—</strong></li>
@@ -286,30 +297,30 @@ function loadHomePage(content) {
             <li id="homeNodeMultRow" style="display:none"><span>Best Node Mult</span><strong id="homeNodeMult">1.00×</strong></li>
             <li id="homeClickMultRow" style="display:none"><span>Click Mult</span><strong id="homeClickMult">1.00×</strong></li>
           </ul>
-        </div>
+        </details>
 
       </div>
 
       <!-- ── Next Goals strip ── -->
       <div class="home-next-goal">
-        <div class="home-goal-hdr">${gi('upgrades', 13)} Recommended Next</div>
+        <div class="home-goal-hdr">${gi('upgrades', 13)} Next moves <span class="qol-muted">Suggested purchases</span></div>
         <div class="home-goal-items">
           <div class="home-goal-item">
             <span class="home-goal-label">Upgrade</span>
             <span class="home-goal-name" id="goalUpgradeName">—</span>
-            <span class="home-goal-cost" id="goalUpgradeCost"></span>
+            <span class="home-goal-cost" id="goalUpgradeCost"></span><button class="page-btn home-goal-link" data-goal="upgrade">View upgrades</button>
           </div>
           <div class="home-goal-sep"></div>
           <div class="home-goal-item">
             <span class="home-goal-label">Node</span>
             <span class="home-goal-name" id="goalNodeName">—</span>
-            <span class="home-goal-cost" id="goalNodeCost"></span>
+            <span class="home-goal-cost" id="goalNodeCost"></span><button class="page-btn home-goal-link" data-goal="node">View nodes</button>
           </div>
           <div class="home-goal-sep"></div>
           <div class="home-goal-item">
             <span class="home-goal-label">Next Orb</span>
             <span class="home-goal-name" id="goalOrbName">—</span>
-            <span class="home-goal-cost" id="goalOrbCost"></span>
+            <span class="home-goal-cost" id="goalOrbCost"></span><button class="page-btn home-goal-link" data-goal="orb">View shop</button>
           </div>
         </div>
       </div>
@@ -332,6 +343,7 @@ function loadHomePage(content) {
     </div>
   `;
 
+  setText(content.querySelector('#home-player-name'), playerName);
   updateHomeDynamic();
   updateHomeOrb();
   if (typeof updateTickProgress === 'function') updateTickProgress();
@@ -339,15 +351,15 @@ function loadHomePage(content) {
   const clBtn = content.querySelector('#open-changelog-btn');
   if (clBtn) clBtn.addEventListener('click', openChangelogModal);
 
-  // Match home-root width exactly to the nav bar width
-  requestAnimationFrame(() => {
-    const nav  = document.querySelector('nav');
-    const root = document.querySelector('.home-root');
-    if (nav && root) {
-      root.style.maxWidth = Math.min(nav.getBoundingClientRect().width, 860) + 'px';
-      root.style.margin   = '0 auto';
-    }
-  });
+  content.querySelector('[data-goal="upgrade"]').onclick = () => {
+    const next = (window.upgradesData || []).filter(u => !u.purchased).sort((a,b) => a.cost.cmp(b.cost))[0];
+    if (next) window.upgradeSelectedNode = next.targetNode;
+    qolFilters.set('upgrades', {query:'', filter:'all'});
+    changePage('upgrades');
+  };
+  content.querySelector('[data-goal="node"]').onclick = () => changePage('nodes');
+  content.querySelector('[data-goal="orb"]').onclick = () => { window.shopActivePage='orbs'; changePage('shop'); };
+
 }
 
 function updateHomeOrb() {
@@ -476,7 +488,7 @@ function renderHomeDynamic() {
 
   // Next milestone: first affordable upgrade, else cheapest upcoming
   const unownedUpgrades  = (window.upgradesData || []).filter(u => !u.purchased);
-  const affordableUpg    = unownedUpgrades.find(u => balance.gte(u.cost));
+  const affordableUpg    = unownedUpgrades.filter(u => balance.gte(u.cost)).reduce((min,u) => !min || u.cost.lt(min.cost) ? u : min, null);
   const cheapestUpg      = unownedUpgrades.reduce((min, u) => (!min || u.cost.lt(min.cost)) ? u : min, null);
   if (el('homeNextMilestone')) {
     if (affordableUpg) {

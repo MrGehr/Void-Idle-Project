@@ -116,7 +116,7 @@ function loadUpgradesPage(content) {
   }
 
   // Track which node is selected (default to first node)
-  let selectedNodeId = window.nodesData[0].id;
+  let selectedNodeId = window.upgradeSelectedNode || window.nodesData[0].id;
 
   content.innerHTML = `
     <div id="upgrades-tab">
@@ -138,7 +138,7 @@ function loadUpgradesPage(content) {
     // Synthetic entries + real nodes
     const tabs = [
       { id: 'tick',  name: 'Tick Speed',  icon: null, syntheticIcon: 'tickspeed' },
-      { id: 'click', name: 'Click Power', icon: null, syntheticIcon: 'click'     },
+      { id: 'click', name: 'Click Power', icon: null, syntheticIcon: 'ach-click10'     },
       ...window.nodesData.map(n => ({ id: n.id, name: n.name, icon: `./Assets/icons/${n.id}.webp` })),
     ];
 
@@ -151,23 +151,26 @@ function loadUpgradesPage(content) {
         ? `<img src="${tab.icon}" alt="${tab.name}" class="node-tab-icon">`
         : `<span class="node-tab-icon node-tab-emoji">${gi(tab.syntheticIcon, 20)}</span>`;
       return `
-        <div class="node-tab ${isActive ? 'active' : ''}" data-node="${tab.id}">
+        <button type="button" aria-pressed="${isActive}" class="node-tab ${isActive ? 'active' : ''}" data-node="${tab.id}">
           ${iconHtml}
           <div class="node-tab-info">
             <span class="node-tab-name">${tab.name}</span>
             <span class="node-tab-meta">${totalOwned}/${nodeUpgrades.length} upgrades</span>
           </div>
           ${available > 0 ? `<span class="node-tab-badge">${available}</span>` : ''}
-        </div>
+        </button>
       `;
     }).join('');
 
     list.querySelectorAll('.node-tab').forEach(tab => {
       tab.addEventListener('click', () => {
         selectedNodeId = tab.dataset.node;
+        window.upgradeSelectedNode = selectedNodeId;
         renderNodeList();
         renderUpgrades();
         updateUpgradeButtons();
+        applyQolFilters();
+        list.querySelector('.node-tab[aria-pressed="true"]')?.focus();
       });
     });
   }
@@ -274,6 +277,7 @@ function loadUpgradesPage(content) {
         if (typeof updateHomeDynamic === 'function') updateHomeDynamic();
         try { if (typeof tryUnlockAchievements === 'function') tryUnlockAchievements(); } catch (err) { console.error('[Achievement error]', err); }
         updateUpgradeButtons();
+        applyQolFilters();
       });
     });
   }
@@ -338,7 +342,7 @@ function loadUpgradesPage(content) {
       if (upg.purchased) {
         btn.disabled    = true;
         btn.textContent = 'Purchased';
-        if (card) card.classList.remove('can-afford');
+        if (card) { card.classList.remove('can-afford'); card.classList.add('is-purchased'); }
       } else {
         const canAfford = balance.gte(upg.cost);
         btn.disabled    = !canAfford;

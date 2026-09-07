@@ -23,7 +23,10 @@ function setPageUpdater(update, cleanup) {
   pageCleanup = cleanup || null;
   scheduleRender(updateCurrentPage);
 }
-function updateCurrentPage() { if (pageUpdater) pageUpdater(); }
+function updateCurrentPage() {
+  if (pageUpdater) pageUpdater();
+  if (typeof updateQualityOfLife === "function") updateQualityOfLife();
+}
 function cleanupCurrentPage() {
   if (pageCleanup) pageCleanup();
   pageCleanup = pageUpdater = null;

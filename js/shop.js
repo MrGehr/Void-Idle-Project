@@ -100,6 +100,7 @@ function renderShopPage(content) {
     btn.addEventListener('click', () => {
       window.shopActivePage = btn.dataset.section;
       renderShopPage(content);
+      applyQolFilters();
     });
   });
 
@@ -120,6 +121,7 @@ function renderShopPage(content) {
       try { if (typeof tryUnlockAchievements === 'function') tryUnlockAchievements(); } catch (err) { console.error('[Achievement error]', err); }
       saveGame();
       renderShopPage(content);
+      applyQolFilters();
     });
   });
 
@@ -129,6 +131,7 @@ function renderShopPage(content) {
       applyEquippedOrb(id);
       saveGame();
       renderShopPage(content);
+      applyQolFilters();
     });
   });
 }

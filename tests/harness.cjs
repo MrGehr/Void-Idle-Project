@@ -35,7 +35,7 @@ function game({ original = false, lazy = false } = {}) {
   run(fs.readFileSync(path.join(root, 'node_modules/break_infinity.js/dist/break_infinity.min.js'), 'utf8'));
   if (!original) run(source('js/runtime.js'));
   const files = ['icons', 'main', 'nodes', 'upgrades', 'prestige', 'stats', 'achievements', 'settings', 'tutorial'];
-  if (!original) files.splice(2, 0, 'relics');
+  if (!original) files.splice(2, 0, 'relics', 'qol');
   if (!lazy) files.push('home', 'shop', 'automation', 'leaderboard');
   files.forEach(name => run(source(`js/${name}.js`, original)));
   // Tests explicitly drive startup or navigation; don't let JSDOM's load event start it again.

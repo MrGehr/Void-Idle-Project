@@ -41,7 +41,8 @@
 
 
   <!-- Pinned break_infinity.js 2.2.0, served locally to avoid a blocking CDN dependency. -->
-  <script src="js/vendor/break_infinity.min.js" defer></script>
+  <script src="js/vendor/break_infinity.min.js?v=9" defer></script>
+  <link rel="stylesheet" href="css/qol.css?v=9" />
 </head>
 
 <body>
@@ -178,7 +179,7 @@
       </div>
     </div>
     <div class="ts-footer-left">&copy; 2026 VoidByte Studio</div>
-    <div class="ts-version">v0.0.8</div>
+    <div class="ts-version">v0.0.9</div>
     <canvas id="ts-particles"></canvas>
   </div>
 
@@ -252,7 +253,7 @@
     </div>
   </header>
 
-  <nav id="main-nav">
+  <nav id="main-nav" aria-label="Game pages">
     <button onclick="changePage('home')" data-page="home" id="nav-home"></button>
     <button onclick="changePage('nodes')" data-page="nodes" id="nav-nodes"></button>
     <button onclick="changePage('upgrades')" data-page="upgrades" id="nav-upgrades"></button>
@@ -265,22 +266,23 @@
     <button onclick="changePage('settings')" data-page="settings" id="nav-settings"></button>
   </nav>
 
-  <main id="content">
+  <main id="content" tabindex="-1">
     <!-- Content will be dynamically loaded here -->
   </main>
 
   <!-- LOAD ORDER MATTERS: load your modules AFTER break_infinity -->
-  <script src="js/icons.js" defer></script>
-  <script src="js/runtime.js" defer></script>
-  <script src="js/main.js" defer></script>
-  <script src="js/relics.js" defer></script>
-  <script src="js/nodes.js" defer></script>
-  <script src="js/upgrades.js" defer></script>
-  <script src="js/prestige.js" defer></script>
-  <script src="js/stats.js" defer></script>
-  <script src="js/achievements.js" defer></script>
-  <script src="js/settings.js" defer></script>
-  <script src="js/tutorial.js" defer></script>
+  <script src="js/icons.js?v=9" defer></script>
+  <script src="js/runtime.js?v=9" defer></script>
+  <script src="js/main.js?v=9" defer></script>
+  <script src="js/relics.js?v=9" defer></script>
+  <script src="js/qol.js?v=9" defer></script>
+  <script src="js/nodes.js?v=9" defer></script>
+  <script src="js/upgrades.js?v=9" defer></script>
+  <script src="js/prestige.js?v=9" defer></script>
+  <script src="js/stats.js?v=9" defer></script>
+  <script src="js/achievements.js?v=9" defer></script>
+  <script src="js/settings.js?v=9" defer></script>
+  <script src="js/tutorial.js?v=9" defer></script>
 </body>
 
 </html>

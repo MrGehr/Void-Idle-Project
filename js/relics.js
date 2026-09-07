@@ -9,7 +9,7 @@ const RELIC_DEFS = [
     flavor: 'A patient fragment of creation. Every new frontier feeds its roots.',
     effect: 'production', values: [.05, .10, .15, .20, .25],
     milestones: [nodeGoal('abyssalshard', 10, 'Abyssal Shards'), nodeGoal('whisperengine', 10, 'Whisper Engines'), nodeGoal('darkmatterloop', 25, 'Dark Matter Loops'), nodeGoal('gravitonseeder', 25, 'Graviton Seeders'), nodeGoal('oblivionspire', 25, 'Oblivion Spires')] },
-  { id: 'echo-shard', name: 'Echo Shard', role: 'Manual clicks', icon: 'click', color: '#66fffa',
+  { id: 'echo-shard', name: 'Echo Shard', role: 'Manual clicks', icon: 'ach-click10', color: '#66fffa',
     flavor: 'The void remembers your touch. The tenth echo answers.',
     effect: 'echo', values: [.20, .40, .60, .80, 1],
     milestones: [3, 10, 25, 50, 70].map(upgradeGoal) },

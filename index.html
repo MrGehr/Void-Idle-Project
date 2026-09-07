@@ -31,7 +31,7 @@
   <link rel="stylesheet" href="css/prestige.css">
 
   <!-- Shop page styles -->
-  <link rel="stylesheet" href="css/shop.css">
+  <link rel="stylesheet" href="css/shop.css" id="shop-css">
 
   <!-- Title screen styles -->
   <link rel="stylesheet" href="css/titlescreen.css">
@@ -40,8 +40,8 @@
   <link rel="stylesheet" href="css/tutorial.css">
 
 
-  <!-- Load break_infinity.js first -->
-  <script src="https://cdn.jsdelivr.net/npm/break_infinity.js@2" defer></script>
+  <!-- Pinned break_infinity.js 2.2.0, served locally to avoid a blocking CDN dependency. -->
+  <script src="js/vendor/break_infinity.min.js" defer></script>
 </head>
 
 <body>
@@ -271,6 +271,7 @@
 
   <!-- LOAD ORDER MATTERS: load your modules AFTER break_infinity -->
   <script src="js/icons.js" defer></script>
+  <script src="js/runtime.js" defer></script>
   <script src="js/main.js" defer></script>
   <script src="js/nodes.js" defer></script>
   <script src="js/upgrades.js" defer></script>

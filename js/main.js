@@ -164,7 +164,7 @@ function applyEquippedOrb(id) {
   if (next.active.autoClick) {
     window.orbAutoClickInterval = setInterval(() => {
       const result = voidenergyClick(1);
-      if (typeof window.spawnOrbClick === 'function') {
+      if (!document.hidden && window.clickEffectsEnabled && typeof window.spawnOrbClick === 'function') {
         const btn = document.getElementById('void-orb-btn');
         if (btn) {
           const rect = btn.getBoundingClientRect();
@@ -180,6 +180,7 @@ function applyEquippedOrb(id) {
 
   // Update the home screen orb visual if the page is loaded
   if (typeof updateHomeOrb === 'function') updateHomeOrb();
+  requestGameRender();
 }
 window.applyEquippedOrb = applyEquippedOrb;
 
@@ -334,17 +335,22 @@ const achievementConditions = [
   { id: 'vept-1b',   check: () => calculateVEPT() >= 1_000_000_000 },
 ];
 
+let achievementIndexSource;
+let achievementIndex;
 function tryUnlockAchievements() {
-  achievementConditions.forEach(({ id, check }) => {
-    if (check()) window.unlockAchievement(id);
-  });
+  if (!window.achievementsData) return;
+  if (achievementIndexSource !== window.achievementsData) {
+    achievementIndexSource = window.achievementsData;
+    achievementIndex = new Map(achievementIndexSource.map(ach => [ach.id, ach]));
+  }
+  for (const { id, check } of achievementConditions) {
+    const ach = achievementIndex.get(id);
+    if (ach && !ach.unlocked && check()) window.unlockAchievement(id);
+  }
 }
 
 // === Utility: Format Large Numbers ===
-function formatNumber(num) {
-  if (!(num instanceof Decimal)) num = new Decimal(num);
-
-  const suffixes = [
+const NUMBER_SUFFIXES = [
     { value: new Decimal('1e33'), symbol: 'D'  },
     { value: new Decimal('1e30'), symbol: 'N'  },
     { value: new Decimal('1e27'), symbol: 'o'  },
@@ -356,10 +362,12 @@ function formatNumber(num) {
     { value: new Decimal('1e9'),  symbol: 'B'  },
     { value: new Decimal('1e6'),  symbol: 'M'  },
     { value: new Decimal('1e3'),  symbol: 'K'  },
-  ];
+  ].map(entry => ({ ...entry, upper: entry.value.mul(1000) }));
+function formatNumber(num) {
+  if (!(num instanceof Decimal)) num = new Decimal(num);
 
-  for (const { value, symbol } of suffixes) {
-    if (num.gte(value) && num.lt(value.mul(1000))) {
+  for (const { value, symbol, upper } of NUMBER_SUFFIXES) {
+    if (num.gte(value) && num.lt(upper)) {
       return num.div(value).toFixed(2).replace(/\.0+$/, '') + symbol;
     }
   }
@@ -370,7 +378,7 @@ function formatNumber(num) {
 // === Utility: Update a DOM Element's Text ===
 function updateDisplay(id, value) {
   const el = document.getElementById(id);
-  if (el) el.textContent = value;
+  setText(el, value);
 }
 
 // === Utility: Milestone Purchase Multiplier ===
@@ -385,7 +393,11 @@ function calculateMilestoneMultiplier(count) {
   return m;
 }
 
+// Invalidated only by purchases, rewards, and save restoration.
+let cachedVEPT;
+function invalidateProduction() { cachedVEPT = undefined; }
 function calculateVEPT() {
+  if (cachedVEPT !== undefined) return cachedVEPT;
   let prod = new Decimal(20); // base 20 VE/tick
 
   for (const node of window.nodesData) {
@@ -399,7 +411,8 @@ function calculateVEPT() {
   const achBonus = window.achievementProdBonus || 0;
   if (achBonus > 0) prod = prod.mul(1 + achBonus);
 
-  return prod.toNumber();
+  cachedVEPT = prod.toNumber();
+  return cachedVEPT;
 }
 
 // === Manual Click ===
@@ -447,13 +460,13 @@ function voidenergyClick(multiplier = 1) {
   }
 
   try { tryUnlockAchievements(); } catch (err) { console.error('[Achievement error]', err); }
-  updateDisplay('voidenergy', voidenergy);
-  try { if (typeof updateHomeDynamic === 'function') updateHomeDynamic(); } catch (err) { console.error('[Home update error]', err); }
+  requestGameRender();
   return { reward, isCombo: comboMult > 1, isCrit: critMult > 1, isCascade, cascadeReward, comboMult, critMult };
 }
 
 // === Refresh Displays on Nodes Page (and Home) ===
 function refreshNodeStats() {
+  scheduleRender(updateCurrentPage);
   updateDisplay('voidenergy', new Decimal(voidenergy).ceil().toString());
 
   if (isNodesPageLoaded) {
@@ -469,8 +482,9 @@ function refreshNodeStats() {
 }
 
 // === Tick Progress Bar ===
-// Runs every 50 ms regardless of which page is open.
+// Drawn at most 30 times/second, only on a visible Home or Nodes page.
 function updateTickProgress() {
+  if (document.hidden) return;
   const elapsed   = Date.now() - (window.tickStartTime || Date.now());
   const interval  = getTickInterval();
   const percent   = Math.min((elapsed / interval) * 100, 100);
@@ -482,11 +496,11 @@ function updateTickProgress() {
   // Home-page fill bar
   const homebar = document.getElementById('homeTickBar');
   if (homebar) {
-    homebar.style.width = percent.toFixed(2) + '%';
+    homebar.style.transform = `scaleX(${percent / 100})`;
     const label = document.getElementById('homeTickLabel');
     if (label) {
       const remSec = Math.max(0, (interval - elapsed) / 1000).toFixed(1);
-      label.textContent = `Next tick in ${remSec}s`;
+      setText(label, `Next tick in ${remSec}s`);
     }
   }
 }
@@ -500,13 +514,12 @@ function generateResourcesPerTick() {
 
   try { tryUnlockAchievements(); } catch (err) { console.error('[Achievement error]', err); }
 
-  updateDisplay('voidenergy', voidenergy);
-  updateDisplay('VEPT', Math.ceil(gained));
-
-  if (typeof updateHomeDynamic === 'function') updateHomeDynamic();
+  requestGameRender();
 }
 
 function startIdleGeneration() {
+  if (window._idleStarted) return;
+  window._idleStarted = true;
   // Use recursive setTimeout so tick speed upgrades take effect on the next tick.
   function scheduleTick() {
     setTimeout(() => {
@@ -522,14 +535,6 @@ function startIdleGeneration() {
   window.tickStartTime = Date.now();
   scheduleTick();
 
-  // Drive the tick bar at display refresh rate instead of a fixed 50ms interval
-  function tickProgressLoop() {
-    updateTickProgress();
-    window._tickProgressRaf = requestAnimationFrame(tickProgressLoop);
-  }
-  if (window._tickProgressRaf) cancelAnimationFrame(window._tickProgressRaf);
-  window._tickProgressRaf = requestAnimationFrame(tickProgressLoop);
-
   // Auto-save every 30 seconds
   if (window._autoSaveInterval) clearInterval(window._autoSaveInterval);
   window._autoSaveInterval = setInterval(() => {
@@ -538,7 +543,14 @@ function startIdleGeneration() {
 }
 
 // === Persistence ===
+let pendingSave = null;
+function requestSave() {
+  if (pendingSave === null) pendingSave = setTimeout(saveGame, 0);
+}
 function saveGame() {
+  if (pendingSave !== null) clearTimeout(pendingSave);
+  pendingSave = null;
+  if (window._resetting) return;
   // Snapshot lifetime playtime up to this moment so it persists across sessions.
   const sessionMs = Date.now() - (window.sessionStartTime || Date.now());
   const save = {
@@ -569,6 +581,7 @@ function saveGame() {
 }
 
 function loadGame() {
+  invalidateProduction();
   const raw = localStorage.getItem('save');
   if (!raw) {
     refreshNodeStats();
@@ -625,11 +638,15 @@ function loadGame() {
     });
   }
 
+  window.nodesData.forEach(node => { node.productionMultiplier = new Decimal(1); });
+
   // Restore purchased upgrades and reapply node production multipliers.
   // tickSpeedReduction and clickUpgradeMultiplier are already restored from their own save fields.
   if (Array.isArray(data.upgrades) && window.upgradesData) {
+    const purchasedIds = new Set(data.upgrades);
     window.upgradesData.forEach(u => {
-      if (data.upgrades.includes(u.id)) {
+      u.purchased = purchasedIds.has(u.id);
+      if (u.purchased) {
         u.purchased = true;
         if (u.multiplier) {
           const targetNode = window.nodesData.find(n => n.id === u.targetNode);
@@ -642,10 +659,12 @@ function loadGame() {
     });
   }
 
+  invalidateProduction();
   refreshNodeStats();
 }
 
 function resetGame() {
+  window._resetting = true;
   localStorage.removeItem('save');
   localStorage.removeItem('playerName');
   localStorage.removeItem(USED_NAMES_KEY);
@@ -654,26 +673,46 @@ function resetGame() {
 }
 
 // === Page Navigation ===
-function changePage(page) {
+const pageScripts = new Map();
+const validPages = new Set(['home', 'nodes', 'upgrades', 'shop', 'automation', 'prestige', 'stats', 'achievements', 'leaderboard', 'settings']);
+let navigationVersion = 0;
+let stopProgress = null;
+async function changePage(page) {
+  if (!validPages.has(page)) return;
+  const version = ++navigationVersion;
+  cleanupCurrentPage();
+  if (stopProgress) stopProgress();
+  stopProgress = null;
   isNodesPageLoaded = (page === 'nodes');
-
-  // Highlight active nav button
   document.querySelectorAll('nav button[data-page]').forEach(btn => {
     btn.classList.toggle('nav-active', btn.dataset.page === page);
   });
-
   const content = document.getElementById('content');
   content.classList.remove('wide-home');
-  content.innerHTML = '';
-
-  const script  = document.createElement('script');
-  script.src    = `js/${page}.js`;
-  script.onload = () => {
-    const fnName = `load${page.charAt(0).toUpperCase()}${page.slice(1)}Page`;
-    const fn     = window[fnName];
-    if (typeof fn === 'function') fn(content);
+  content.replaceChildren();
+  const fnName = `load${page.charAt(0).toUpperCase()}${page.slice(1)}Page`;
+  try {
+    if (typeof window[fnName] !== 'function') {
+      if (!pageScripts.has(page)) {
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = `js/${page}.js`;
+          script.onload = resolve;
+          script.onerror = () => {
+            script.remove();
+            pageScripts.delete(page);
+            reject(new Error(`Could not load ${page}`));
+          };
+          document.body.appendChild(script);
+        });
+        pageScripts.set(page, promise);
+      }
+      await pageScripts.get(page);
+    }
+    if (version !== navigationVersion) return;
+    window[fnName](content);
     refreshNodeStats();
-    // Ensure persistent footer exists (created once, lives outside content)
+    if (page === 'home' || page === 'nodes') stopProgress = startVisualLoop(updateTickProgress);
     if (!document.getElementById('game-footer')) {
       const footer = document.createElement('footer');
       footer.id = 'game-footer';
@@ -681,8 +720,10 @@ function changePage(page) {
       footer.innerHTML = `<span>&copy; ${new Date().getFullYear()} VoidByte Studio</span><span>v0.0.7</span>`;
       document.body.appendChild(footer);
     }
-  };
-  document.body.appendChild(script);
+  } catch (error) {
+    console.error('[Navigation error]', error);
+    if (version === navigationVersion) content.textContent = 'This page could not load. Select its tab to retry.';
+  }
 }
 
 // === Character Creation ===
@@ -806,17 +847,18 @@ function initParticleCanvas() {
 
   const particles = Array.from({ length: COUNT }, () => spawnP(true));
 
-  function tick() {
+  function tick(delta) {
+    const step = delta / (1000 / 60);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     for (let i = 0; i < particles.length; i++) {
       const p = particles[i];
-      p.x += p.vx;
-      p.y += p.vy;
+      p.x += p.vx * step;
+      p.y += p.vy * step;
       if (p.rising) {
-        p.alpha += p.da;
+        p.alpha += p.da * step;
         if (p.alpha >= p.maxA) p.rising = false;
       } else {
-        p.alpha -= p.da * 0.65;
+        p.alpha -= p.da * 0.65 * step;
       }
       if (p.alpha <= 0 || p.y < -4) { particles[i] = spawnP(false); continue; }
       ctx.save();
@@ -829,12 +871,13 @@ function initParticleCanvas() {
       ctx.fill();
       ctx.restore();
     }
-    requestAnimationFrame(tick);
+
   }
-  tick();
+  startVisualLoop(tick, { decorative: true });
 }
 
 window.onload = () => {
+  syncVisualSettings();
   // Hide game UI until title screen is dismissed
   const header  = document.querySelector('header');
   const nav     = document.getElementById('main-nav');
@@ -881,9 +924,12 @@ window.onload = () => {
     // Settings change handlers
     if (tsBgAnim) tsBgAnim.addEventListener('change', () => {
       localStorage.setItem('bgAnimationEnabled', tsBgAnim.checked);
+      window.backgroundAnimationEnabled = tsBgAnim.checked;
+      syncVisualSettings();
     });
     if (tsClickFx) tsClickFx.addEventListener('change', () => {
       localStorage.setItem('clickEffectsEnabled', tsClickFx.checked);
+      window.clickEffectsEnabled = tsClickFx.checked;
     });
     if (tsBgSound) tsBgSound.addEventListener('change', () => {
       localStorage.setItem('bgSoundEnabled', tsBgSound.checked);
@@ -998,12 +1044,12 @@ window.onload = () => {
       hue: Math.random() > 0.5 ? '255,106,255' : '102,255,250',
     }));
 
-    let animId;
-    function tick() {
+    function tick(delta) {
+      const step = delta / (1000 / 60);
       ctx.clearRect(0, 0, w, h);
       for (const p of dust) {
-        p.x += p.dx;
-        p.y += p.dy;
+        p.x += p.dx * step;
+        p.y += p.dy * step;
         if (p.x < -10) p.x = w + 10;
         if (p.x > w + 10) p.x = -10;
         if (p.y < -10) p.y = h + 10;
@@ -1014,10 +1060,10 @@ window.onload = () => {
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
         ctx.fill();
       }
-      animId = requestAnimationFrame(tick);
+
     }
-    tick();
-    window._tsDustCleanup = () => { cancelAnimationFrame(animId); };
+    const stop = startVisualLoop(tick, { decorative: true });
+    window._tsDustCleanup = () => { stop(); window.removeEventListener('resize', resize); };
   })();
 
   // ── Start Game ──

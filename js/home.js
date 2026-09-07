@@ -407,11 +407,18 @@ function closeChangelogModal() {
 window.updateHomeOrb = updateHomeOrb;
 window.spawnOrbClick = spawnOrbClick;
 
-function updateHomeDynamic() {
+function updateHomeDynamic() { scheduleRender(renderHomeDynamic); }
+
+function renderHomeDynamic() {
   if (typeof lifetimeVE === 'undefined') return;
   if (!window.achievementsData) return;
 
-  const el = id => document.getElementById(id);
+  const elements = new Map();
+  const el = id => {
+    if (!elements.has(id)) elements.set(id, document.getElementById(id));
+    return elements.get(id);
+  };
+  const balance = new Decimal(voidenergy);
   if (!el('playerLevelLabel')) return; // page not loaded
 
   // Level from lifetimeVE
@@ -431,54 +438,54 @@ function updateHomeDynamic() {
   const equippedOrb = (window.orbsData || []).find(o => o.id === window.equippedOrbId);
 
   // ── Hero
-  if (el('voidenergy')) el('voidenergy').textContent = formatNumber(voidenergy);
-  if (el('VEPT'))       el('VEPT').textContent       = formatNumber(vept);
+  if (el('voidenergy')) setText(el('voidenergy'), formatNumber(voidenergy));
+  if (el('VEPT'))       setText(el('VEPT'), formatNumber(vept));
 
   // ── Progress card
-  if (el('playerLevelLabel'))     el('playerLevelLabel').textContent     = level;
+  if (el('playerLevelLabel'))     setText(el('playerLevelLabel'), level);
   if (el('xpProgress'))           el('xpProgress').style.width           = `${progress.toFixed(2)}%`;
-  if (el('xpText'))               el('xpText').textContent               = `${formatNumber(gained)} / ${formatNumber(nextVE.minus(currentVE))} XP`;
-  if (el('achievementsUnlocked')) el('achievementsUnlocked').textContent = `${unlocked.length} / ${window.achievementsData.length}`;
-  if (el('homePrestiges'))        el('homePrestiges').textContent        = prestige;
+  if (el('xpText'))               setText(el('xpText'), `${formatNumber(gained)} / ${formatNumber(nextVE.minus(currentVE))} XP`);
+  if (el('achievementsUnlocked')) setText(el('achievementsUnlocked'), `${unlocked.length} / ${window.achievementsData.length}`);
+  if (el('homePrestiges'))        setText(el('homePrestiges'), prestige);
 
   // Next milestone: first affordable upgrade, else cheapest upcoming
   const unownedUpgrades  = (window.upgradesData || []).filter(u => !u.purchased);
-  const affordableUpg    = unownedUpgrades.find(u => new Decimal(voidenergy).gte(u.cost));
+  const affordableUpg    = unownedUpgrades.find(u => balance.gte(u.cost));
   const cheapestUpg      = unownedUpgrades.reduce((min, u) => (!min || u.cost.lt(min.cost)) ? u : min, null);
   if (el('homeNextMilestone')) {
     if (affordableUpg) {
-      el('homeNextMilestone').textContent = affordableUpg.name;
+      setText(el('homeNextMilestone'), affordableUpg.name);
       el('homeNextMilestone').style.color = 'var(--accent)';
     } else if (cheapestUpg) {
-      el('homeNextMilestone').textContent = formatNumber(cheapestUpg.cost) + ' VE';
+      setText(el('homeNextMilestone'), formatNumber(cheapestUpg.cost) + ' VE');
       el('homeNextMilestone').style.color = 'rgba(224,224,224,0.5)';
     } else {
-      el('homeNextMilestone').textContent = 'All upgrades purchased';
+      setText(el('homeNextMilestone'), 'All upgrades purchased');
     }
   }
 
   // ── Production card
-  if (el('homeVEPT'))         el('homeVEPT').textContent         = formatNumber(vept);
-  if (el('homeVEPS'))         el('homeVEPS').textContent         = formatNumber(vept / tickSec);
-  if (el('homeTickInterval')) el('homeTickInterval').textContent = tickSec.toFixed(1);
-  if (el('totalNodes'))       el('totalNodes').textContent       = totalNodes;
-  if (el('homeClickPower'))   el('homeClickPower').textContent   = clickMult.toFixed(2) + '×';
+  if (el('homeVEPT'))         setText(el('homeVEPT'), formatNumber(vept));
+  if (el('homeVEPS'))         setText(el('homeVEPS'), formatNumber(vept / tickSec));
+  if (el('homeTickInterval')) setText(el('homeTickInterval'), tickSec.toFixed(1));
+  if (el('totalNodes'))       setText(el('totalNodes'), totalNodes);
+  if (el('homeClickPower'))   setText(el('homeClickPower'), clickMult.toFixed(2) + '×');
   if (equippedOrb && equippedOrb.active.autoClick) {
     if (el('homeAutoRow'))    el('homeAutoRow').style.display    = '';
-    if (el('homeAutoSource')) { el('homeAutoSource').textContent = equippedOrb.name; el('homeAutoSource').style.color = equippedOrb.color; }
+    if (el('homeAutoSource')) { setText(el('homeAutoSource'), equippedOrb.name); el('homeAutoSource').style.color = equippedOrb.color; }
   } else {
     if (el('homeAutoRow'))    el('homeAutoRow').style.display    = 'none';
   }
 
   // ── Active Bonuses card
   if (equippedOrb) {
-    if (el('homeActivOrbName')) { el('homeActivOrbName').textContent = equippedOrb.name; el('homeActivOrbName').style.color = equippedOrb.color; }
-    if (el('homeActivePassive')) el('homeActivePassive').textContent = equippedOrb.passive.label;
-    if (el('homeActiveActive'))  el('homeActiveActive').textContent  = equippedOrb.active.label;
+    if (el('homeActivOrbName')) { setText(el('homeActivOrbName'), equippedOrb.name); el('homeActivOrbName').style.color = equippedOrb.color; }
+    if (el('homeActivePassive')) setText(el('homeActivePassive'), equippedOrb.passive.label);
+    if (el('homeActiveActive'))  setText(el('homeActiveActive'), equippedOrb.active.label);
   } else {
-    if (el('homeActivOrbName'))  el('homeActivOrbName').textContent  = 'None';
-    if (el('homeActivePassive')) el('homeActivePassive').textContent = '—';
-    if (el('homeActiveActive'))  el('homeActiveActive').textContent  = '—';
+    if (el('homeActivOrbName'))  setText(el('homeActivOrbName'), 'None');
+    if (el('homeActivePassive')) setText(el('homeActivePassive'), '—');
+    if (el('homeActiveActive'))  setText(el('homeActiveActive'), '—');
   }
   // Total passive multiplier from all owned orbs
   let totalPassiveMult = 1;
@@ -487,7 +494,7 @@ function updateHomeDynamic() {
   });
   if (totalPassiveMult > 1) {
     if (el('homeTotalPassiveRow')) el('homeTotalPassiveRow').style.display = '';
-    if (el('homeTotalPassive'))    el('homeTotalPassive').textContent      = totalPassiveMult.toFixed(2) + '×';
+    if (el('homeTotalPassive'))    setText(el('homeTotalPassive'), totalPassiveMult.toFixed(2) + '×');
   } else {
     if (el('homeTotalPassiveRow')) el('homeTotalPassiveRow').style.display = 'none';
   }
@@ -498,37 +505,37 @@ function updateHomeDynamic() {
   }, 1);
   if (bestNodeMult > 1) {
     if (el('homeNodeMultRow')) el('homeNodeMultRow').style.display = '';
-    if (el('homeNodeMult'))    el('homeNodeMult').textContent      = bestNodeMult.toFixed(2) + '×';
+    if (el('homeNodeMult'))    setText(el('homeNodeMult'), bestNodeMult.toFixed(2) + '×');
   } else {
     if (el('homeNodeMultRow')) el('homeNodeMultRow').style.display = 'none';
   }
   if (clickMult > 1) {
     if (el('homeClickMultRow')) el('homeClickMultRow').style.display = '';
-    if (el('homeClickMult'))    el('homeClickMult').textContent      = clickMult.toFixed(2) + '×';
+    if (el('homeClickMult'))    setText(el('homeClickMult'), clickMult.toFixed(2) + '×');
   } else {
     if (el('homeClickMultRow')) el('homeClickMultRow').style.display = 'none';
   }
 
   // ── Next Goals strip
   const cheapestNode    = window.nodesData.reduce((min, n) => (!min || n.cost.lt(min.cost)) ? n : min, null);
-  const nodeAffordable  = cheapestNode && new Decimal(voidenergy).gte(cheapestNode.cost);
+  const nodeAffordable  = cheapestNode && balance.gte(cheapestNode.cost);
   const unownedOrbs     = (window.orbsData || []).filter(o => !o.owned);
   const nextOrb         = unownedOrbs.reduce((min, o) => (!min || o.cost < min.cost) ? o : min, null);
   const orbAffordable   = nextOrb && voidenergy >= nextOrb.cost;
 
-  if (el('goalUpgradeName')) el('goalUpgradeName').textContent = affordableUpg ? affordableUpg.name : (cheapestUpg ? cheapestUpg.name : 'All purchased');
+  if (el('goalUpgradeName')) setText(el('goalUpgradeName'), affordableUpg ? affordableUpg.name : (cheapestUpg ? cheapestUpg.name : 'All purchased'));
   if (el('goalUpgradeCost')) {
-    el('goalUpgradeCost').textContent = affordableUpg ? '✓ Ready to buy' : (cheapestUpg ? formatNumber(cheapestUpg.cost) + ' VE' : '');
+    setText(el('goalUpgradeCost'), affordableUpg ? '✓ Ready to buy' : (cheapestUpg ? formatNumber(cheapestUpg.cost) + ' VE' : ''));
     el('goalUpgradeCost').className   = 'home-goal-cost' + (affordableUpg ? ' is-ready' : '');
   }
-  if (el('goalNodeName')) el('goalNodeName').textContent = cheapestNode ? cheapestNode.name : '—';
+  if (el('goalNodeName')) setText(el('goalNodeName'), cheapestNode ? cheapestNode.name : '—');
   if (el('goalNodeCost')) {
-    el('goalNodeCost').textContent = cheapestNode ? (nodeAffordable ? '✓ Ready to buy' : formatNumber(cheapestNode.cost.ceil()) + ' VE') : '';
+    setText(el('goalNodeCost'), cheapestNode ? (nodeAffordable ? '✓ Ready to buy' : formatNumber(cheapestNode.cost.ceil()) + ' VE') : '');
     el('goalNodeCost').className   = 'home-goal-cost' + (nodeAffordable ? ' is-ready' : '');
   }
-  if (el('goalOrbName')) el('goalOrbName').textContent = nextOrb ? nextOrb.name : 'All owned';
+  if (el('goalOrbName')) setText(el('goalOrbName'), nextOrb ? nextOrb.name : 'All owned');
   if (el('goalOrbCost')) {
-    el('goalOrbCost').textContent = nextOrb ? (orbAffordable ? '✓ Ready to buy' : formatNumber(nextOrb.cost) + ' VE') : '';
+    setText(el('goalOrbCost'), nextOrb ? (orbAffordable ? '✓ Ready to buy' : formatNumber(nextOrb.cost) + ' VE') : '');
     el('goalOrbCost').className   = 'home-goal-cost' + (orbAffordable ? ' is-ready' : '');
   }
 }
@@ -547,7 +554,7 @@ function orbClick(e) {
   _lastOrbClick = now;
   const result = voidenergyClick(1);
   const reward = typeof result === 'object' ? result.reward : result;
-  if (localStorage.getItem('clickEffectsEnabled') !== 'false') {
+  if (window.clickEffectsEnabled) {
     if (now - _lastOrbEffect >= ORB_EFFECT_INTERVAL_MS) {
       _lastOrbEffect = now;
       spawnOrbClick(e, reward, typeof result === 'object' ? result : {});
@@ -556,6 +563,7 @@ function orbClick(e) {
 }
 
 function spawnOrbClick(e, reward = 1, hitFlags = {}) {
+  if (document.hidden || !window.clickEffectsEnabled) return;
   const btn = document.getElementById('void-orb-btn');
   if (!btn) return;
   const rect = btn.getBoundingClientRect();

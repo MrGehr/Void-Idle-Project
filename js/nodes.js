@@ -25,6 +25,7 @@ function loadNodesPage(content) {
     `;
 
     const tableBody = content.querySelector("#nodes-table-body");
+    const nodeElements = new Map();
     window.nodesData.forEach(node => {
       const row = document.createElement("tr");
       row.dataset.nodeId = node.id;
@@ -32,7 +33,7 @@ function loadNodesPage(content) {
         <td>
           <div class="node-entry">
             <img
-              src="./Assets/icons/${node.id}.png"
+              src="./Assets/icons/${node.id}.webp"
               alt="${node.name}"
               class="node-icon"
             >
@@ -49,30 +50,25 @@ function loadNodesPage(content) {
         <td><button class="page-btn" id="${node.id}-buy-btn" onclick="buyNode('${node.id}')">Buy</button></td>
       `;
       tableBody.appendChild(row);
+      nodeElements.set(node.id, { row, btn: row.querySelector('button') });
     });
 
     refreshNodeStats();
 
-    // Poll to sync affordability state and owned-row highlights
-    if (window.nodesRefreshInterval) clearInterval(window.nodesRefreshInterval);
-    window.nodesRefreshInterval = setInterval(() => {
+    setPageUpdater(() => {
       const tab = document.getElementById('nodes-tab');
-      if (!tab) {
-        clearInterval(window.nodesRefreshInterval);
-        window.nodesRefreshInterval = null;
-        return;
-      }
+      if (!tab) return;
+      const balance = new Decimal(voidenergy);
       window.nodesData.forEach(node => {
-        const row = tableBody.querySelector(`tr[data-node-id="${node.id}"]`);
-        const btn = document.getElementById(`${node.id}-buy-btn`);
+        const { row, btn } = nodeElements.get(node.id);
         if (!row || !btn) return;
 
-        const canAfford = new Decimal(voidenergy).gte(node.cost);
+        const canAfford = balance.gte(node.cost);
         btn.disabled = !canAfford;
         btn.classList.toggle('can-afford', canAfford);
         row.classList.toggle('has-nodes', node.count > 0);
       });
-    }, 200);
+    });
 }
 
 // getNodeProduction: returns VE/tick for a single owned node.
@@ -93,6 +89,7 @@ function buyNode(nodeId) {
 
     // Increase count
     node.count++;
+    invalidateProduction();
 
     // Increase cost & update UI
     node.cost = node.cost.mul(node.costGrowth || 1.15);

@@ -139,7 +139,7 @@ function loadUpgradesPage(content) {
     const tabs = [
       { id: 'tick',  name: 'Tick Speed',  icon: null, syntheticIcon: 'tickspeed' },
       { id: 'click', name: 'Click Power', icon: null, syntheticIcon: 'click'     },
-      ...window.nodesData.map(n => ({ id: n.id, name: n.name, icon: `./Assets/icons/${n.id}.png` })),
+      ...window.nodesData.map(n => ({ id: n.id, name: n.name, icon: `./Assets/icons/${n.id}.webp` })),
     ];
 
     list.innerHTML = tabs.map(tab => {
@@ -167,6 +167,7 @@ function loadUpgradesPage(content) {
         selectedNodeId = tab.dataset.node;
         renderNodeList();
         renderUpgrades();
+        updateUpgradeButtons();
       });
     });
   }
@@ -267,6 +268,7 @@ function loadUpgradesPage(content) {
         }
 
         upg.purchased = true;
+        invalidateProduction();
         refreshNodeStats();
         if (typeof updateHomeDynamic === 'function') updateHomeDynamic();
         try { if (typeof tryUnlockAchievements === 'function') tryUnlockAchievements(); } catch (err) { console.error('[Achievement error]', err); }
@@ -275,9 +277,10 @@ function loadUpgradesPage(content) {
     });
   }
 
-  // Poll to keep buy buttons and badges in sync as VE changes.
+  // Refresh buy buttons and badges only when game state changes.
   // Only mutates existing DOM elements — never rebuilds innerHTML — so hover states are preserved.
   function updateUpgradeButtons() {
+    const balance = new Decimal(voidenergy);
     if (!document.getElementById('upgrades-tab')) {
       clearInterval(window.upgradesInterval);
       window.upgradesInterval = null;
@@ -289,7 +292,7 @@ function loadUpgradesPage(content) {
       const syntheticTab = document.querySelector(`.node-tab[data-node="${syntheticId}"]`);
       if (!syntheticTab) return;
       const syntheticUpgrades = window.upgradesData.filter(u => u.targetNode === syntheticId);
-      const available  = syntheticUpgrades.filter(u => !u.purchased && new Decimal(voidenergy).gte(u.cost)).length;
+      const available  = syntheticUpgrades.filter(u => !u.purchased && balance.gte(u.cost)).length;
       const totalOwned = syntheticUpgrades.filter(u => u.purchased).length;
       const meta = syntheticTab.querySelector('.node-tab-meta');
       if (meta) meta.textContent = `${totalOwned}/${syntheticUpgrades.length} upgrades`;
@@ -305,7 +308,7 @@ function loadUpgradesPage(content) {
       const tab = document.querySelector(`.node-tab[data-node="${node.id}"]`);
       if (!tab) return;
       const nodeUpgrades = window.upgradesData.filter(u => u.targetNode === node.id);
-      const available    = nodeUpgrades.filter(u => !u.purchased && new Decimal(voidenergy).gte(u.cost)).length;
+      const available    = nodeUpgrades.filter(u => !u.purchased && balance.gte(u.cost)).length;
       const totalOwned   = nodeUpgrades.filter(u => u.purchased).length;
 
       // Update meta text
@@ -336,7 +339,7 @@ function loadUpgradesPage(content) {
         btn.textContent = 'Purchased';
         if (card) card.classList.remove('can-afford');
       } else {
-        const canAfford = new Decimal(voidenergy).gte(upg.cost);
+        const canAfford = balance.gte(upg.cost);
         btn.disabled    = !canAfford;
         btn.textContent = formatNumber(upg.cost) + ' VE';
         if (card) card.classList.toggle('can-afford', canAfford);
@@ -347,9 +350,9 @@ function loadUpgradesPage(content) {
     const tickInfo = document.querySelector('.upgrades-tick-info');
     if (tickInfo) {
       if (selectedNodeId === 'tick') {
-        tickInfo.innerHTML = `Current interval: <strong>${(getTickInterval() / 1000).toFixed(1)}s</strong> &mdash; base ${(TICK_INTERVAL / 1000).toFixed(1)}s &mdash; minimum 1s`;
+        setMarkup(tickInfo, `Current interval: <strong>${(getTickInterval() / 1000).toFixed(1)}s</strong> &mdash; base ${(TICK_INTERVAL / 1000).toFixed(1)}s &mdash; minimum 1s`);
       } else if (selectedNodeId === 'click') {
-        tickInfo.innerHTML = `Current click multiplier: <strong>${(window.clickUpgradeMultiplier || 1).toFixed(2)}×</strong>`;
+        setMarkup(tickInfo, `Current click multiplier: <strong>${(window.clickUpgradeMultiplier || 1).toFixed(2)}×</strong>`);
       }
     }
   }
@@ -357,9 +360,7 @@ function loadUpgradesPage(content) {
   renderNodeList();
   renderUpgrades();
 
-  if (!window.upgradesInterval) {
-    window.upgradesInterval = setInterval(updateUpgradeButtons, 500);
-  }
+  setPageUpdater(updateUpgradeButtons);
 }
 
 window.loadUpgradesPage = loadUpgradesPage;

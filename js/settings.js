@@ -1,6 +1,7 @@
 // settings.js
 
 window.bgAudio        = window.bgAudio || new Audio('js/Sound Asset/stellar_trailblazer.mp3');
+window.bgAudio.preload = 'none';
 window.bgAudio.loop   = true;
 window.bgAudio.volume = parseFloat(localStorage.getItem('bgSoundVolume')) || 0.1;
 
@@ -59,11 +60,13 @@ function loadSettingsPage(content) {
   animationCheckbox.addEventListener('change', () => {
     const enabled = animationCheckbox.checked;
     localStorage.setItem('bgAnimationEnabled', enabled);
-    document.body.classList.toggle('no-bg-animation', !enabled);
+    window.backgroundAnimationEnabled = enabled;
+    syncVisualSettings();
   });
 
   clickEffectsCheckbox.addEventListener('change', () => {
     localStorage.setItem('clickEffectsEnabled', clickEffectsCheckbox.checked);
+    window.clickEffectsEnabled = clickEffectsCheckbox.checked;
   });
 
   soundCheckbox.addEventListener('change', () => {

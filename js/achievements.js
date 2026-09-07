@@ -257,6 +257,7 @@ function applyAchievementReward(id) {
   if (!reward) return;
   if (reward.type === 'prod') {
     window.achievementProdBonus = (window.achievementProdBonus || 0) + reward.value;
+    invalidateProduction();
   } else if (reward.type === 'click') {
     window.achievementClickBonus = (window.achievementClickBonus || 0) + reward.value;
   } else if (reward.type === 've') {
@@ -272,7 +273,7 @@ function unlockAchievement(id) {
     ach.unlocked = true;
     ach.claimed  = true;
     applyAchievementReward(id);
-    if (typeof saveGame === 'function') saveGame();
+    requestSave();
     showAchievementToast(ach);
     // If the achievements page is open, patch the specific card in-place (preserves scroll).
     const card = document.getElementById(id);

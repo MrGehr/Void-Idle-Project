@@ -303,10 +303,12 @@
 
 .home-tick-fill {
   height: 100%;
-  width: 0%;
+  width: 100%;
   background: linear-gradient(90deg, var(--accent), var(--primary));
   box-shadow: 0 0 8px rgba(102, 255, 250, 0.5);
   border-radius: 8px;
+  transform: scaleX(0);
+  transform-origin: left;
 }
 
 .home-tick-meta {

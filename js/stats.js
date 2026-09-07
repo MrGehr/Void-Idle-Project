@@ -63,11 +63,12 @@ function loadStatsPage(content) {
     `;
 
     updateStatsPage();
+    setPageUpdater(updateStatsPage);
 
     if (!window.statsInterval) {
         window.statsInterval = setInterval(() => {
             if (document.getElementById('stats-tab')) {
-                updateStatsPage();
+                if (!document.hidden) updateStatsPage();
             } else {
                 clearInterval(window.statsInterval);
                 window.statsInterval = null;
@@ -187,7 +188,7 @@ function updateStatsPage() {
     currentVEPSEl.textContent = veps < 100 ? veps.toFixed(2) : formatNumber(veps);
 
     // Bonus cards (passive + active)
-    if (bonusRow) bonusRow.innerHTML = renderBonusCards();
+    setMarkup(bonusRow, renderBonusCards());
 
     // Node Stats — surgical update: update cell text in place, only rebuild if row count changed
     const rows = nodeTable.querySelectorAll('tr');

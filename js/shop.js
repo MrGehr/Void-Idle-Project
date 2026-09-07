@@ -40,15 +40,9 @@ function loadShopPage(content) {
   }
   renderShopPage(content);
 
-  // Start the live-update interval every time the shop page is loaded.
-  if (window.shopRefreshInterval) clearInterval(window.shopRefreshInterval);
-  window.shopRefreshInterval = setInterval(() => {
+  setPageUpdater(() => {
     const tab = document.getElementById('shop-tab');
-    if (!tab) {
-      clearInterval(window.shopRefreshInterval);
-      window.shopRefreshInterval = null;
-      return;
-    }
+    if (!tab) return;
     const equippedOrb = (window.orbsData || []).find(o => o.id === window.equippedOrbId);
     tab.querySelectorAll('.orb-combo-hint').forEach(el => {
       if (!equippedOrb) return;
@@ -70,7 +64,7 @@ function loadShopPage(content) {
         card.classList.toggle('is-locked', !canAfford);
       }
     });
-  }, 200);
+  });
 }
 
 function renderShopPage(content) {
@@ -115,6 +109,7 @@ function renderShopPage(content) {
 
       voidenergy -= orb.cost;
       orb.owned = true;
+      invalidateProduction();
       applyEquippedOrb(orb.id);
       updateDisplay('voidenergy', voidenergy);
       try { if (typeof tryUnlockAchievements === 'function') tryUnlockAchievements(); } catch (err) { console.error('[Achievement error]', err); }

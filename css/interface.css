@@ -534,3 +534,6 @@ nav button.nav-active .gi {
   align-items: center;
   justify-content: center;
 }
+/* Stop decorative canvas display along with the existing star animation. */
+.no-bg-animation #particle-bg,
+.no-bg-animation #ts-particles { display: none; }

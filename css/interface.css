@@ -537,3 +537,8 @@ nav button.nav-active .gi {
 /* Stop decorative canvas display along with the existing star animation. */
 .no-bg-animation #particle-bg,
 .no-bg-animation #ts-particles { display: none; }
+
+.relic-notice { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:1500; width:min(620px,calc(100% - 32px)); box-sizing:border-box; display:flex; flex-wrap:wrap; align-items:center; gap:14px; padding:16px 20px; border:1px solid var(--accent); border-radius:12px; background:#0d0922; box-shadow:0 8px 32px #0008; font-size:.85rem; line-height:1.7; }
+.relic-notice[hidden] { display:none; }
+.relic-notice span { flex:1; min-width:180px; }
+.relic-notice button { font:inherit; font-size:.8rem; cursor:pointer; padding:8px 12px; color:var(--accent); border:1px solid currentColor; border-radius:6px; background:transparent; }

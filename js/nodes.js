@@ -46,7 +46,7 @@ function loadNodesPage(content) {
           </div>
         </td>
         <td><span class="node-count" id="${node.id}">${new Decimal(node.count).floor().toString()}</span></td>
-        <td id="${node.id}Cost">${formatNumber(node.cost.ceil())}</td>
+        <td id="${node.id}Cost">${formatNumber(getNodePurchaseCost(node).ceil())}</td>
         <td><button class="page-btn" id="${node.id}-buy-btn" onclick="buyNode('${node.id}')">Buy</button></td>
       `;
       tableBody.appendChild(row);
@@ -63,7 +63,7 @@ function loadNodesPage(content) {
         const { row, btn } = nodeElements.get(node.id);
         if (!row || !btn) return;
 
-        const canAfford = balance.gte(node.cost);
+        const canAfford = balance.gte(getNodePurchaseCost(node));
         btn.disabled = !canAfford;
         btn.classList.toggle('can-afford', canAfford);
         row.classList.toggle('has-nodes', node.count > 0);
@@ -81,10 +81,12 @@ function getNodeProduction(node) {
 
 function buyNode(nodeId) {
     const node = window.nodesData.find(n => n.id === nodeId);
-    if (!node || new Decimal(voidenergy).lt(node.cost)) return;
+    if (!node) return;
+    const price = getNodePurchaseCost(node);
+    if (new Decimal(voidenergy).lt(price)) return;
 
     // Deduct cost
-    voidenergy = new Decimal(voidenergy).minus(node.cost).toNumber();
+    voidenergy = new Decimal(voidenergy).minus(price).toNumber();
     updateDisplay("voidenergy", voidenergy);
 
     // Increase count
@@ -93,8 +95,9 @@ function buyNode(nodeId) {
 
     // Increase cost & update UI
     node.cost = node.cost.mul(node.costGrowth || 1.15);
+    checkRelicProgress();
     updateDisplay(node.id, new Decimal(node.count).floor().toString());
-    updateDisplay(`${node.id}Cost`, formatNumber(node.cost.ceil()));
+    updateDisplay(`${node.id}Cost`, formatNumber(getNodePurchaseCost(node).ceil()));
     updateDisplay(`${node.id}Production`,
                   `+${formatNumber(getNodeProduction(node))} VE / tick`);
 

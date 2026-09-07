@@ -809,3 +809,6 @@
     transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(0.1);
   }
 }
+.home-relic-summary { display:flex; flex-wrap:wrap; align-items:center; gap:10px; color:var(--accent); font-size:.72rem; line-height:1.8; }
+.home-relic-summary span { flex:1; min-width:150px; }
+.home-relic-summary .page-btn { font-size:.7rem; }

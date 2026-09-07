@@ -163,7 +163,7 @@ function applyEquippedOrb(id) {
   // Start auto-click if the new orb has it
   if (next.active.autoClick) {
     window.orbAutoClickInterval = setInterval(() => {
-      const result = voidenergyClick(1);
+      const result = voidenergyClick(1, 'auto');
       if (!document.hidden && window.clickEffectsEnabled && typeof window.spawnOrbClick === 'function') {
         const btn = document.getElementById('void-orb-btn');
         if (btn) {
@@ -411,12 +411,13 @@ function calculateVEPT() {
   const achBonus = window.achievementProdBonus || 0;
   if (achBonus > 0) prod = prod.mul(1 + achBonus);
 
+  if (relicModifiers.production > 0) prod = prod.mul(1 + relicModifiers.production);
   cachedVEPT = prod.toNumber();
   return cachedVEPT;
 }
 
 // === Manual Click ===
-function voidenergyClick(multiplier = 1) {
+function voidenergyClick(multiplier = 1, source = 'manual') {
   const equippedOrb = (window.orbsData || []).find(o => o.id === window.equippedOrbId);
   const clickPct    = equippedOrb ? equippedOrb.active.clickPct : 0.01;
   const vept        = calculateVEPT();
@@ -442,9 +443,18 @@ function voidenergyClick(multiplier = 1) {
 
   const baseReward = Math.max(1, Math.floor(vept * clickPct * multiplier * comboMult * critMult * (window.clickUpgradeMultiplier || 1)));
   const reward = Math.ceil(baseReward * (1 + (window.achievementClickBonus || 0)));
+  const ordinaryReward = relicModifiers.echo > 0 && source === 'manual'
+    ? Math.ceil(Math.max(1, Math.floor(vept * clickPct * multiplier * (window.clickUpgradeMultiplier || 1))) * (1 + (window.achievementClickBonus || 0)))
+    : 0;
+  const relicHit = applyRelicClickEffects({ manual: source === 'manual', ordinaryReward, reward, isCrit: critMult > 1 });
+  const relicReward = relicHit.echoReward + relicHit.criticalReward;
   voidenergy   = Math.ceil(voidenergy + reward);
   lifetimeVE   = lifetimeVE.plus(reward);
   window.totalClicks++;
+  if (relicReward > 0) {
+    voidenergy += relicReward;
+    lifetimeVE = lifetimeVE.plus(relicReward);
+  }
 
   // Cascade: each click also fires cascadeCount sub-hits at cascadePct power
   let cascadeReward = 0;
@@ -461,7 +471,7 @@ function voidenergyClick(multiplier = 1) {
 
   try { tryUnlockAchievements(); } catch (err) { console.error('[Achievement error]', err); }
   requestGameRender();
-  return { reward, isCombo: comboMult > 1, isCrit: critMult > 1, isCascade, cascadeReward, comboMult, critMult };
+  return { ...relicHit, reward: reward + relicReward, isCombo: comboMult > 1, isCrit: critMult > 1, isCascade, cascadeReward, comboMult, critMult };
 }
 
 // === Refresh Displays on Nodes Page (and Home) ===
@@ -470,10 +480,11 @@ function refreshNodeStats() {
   updateDisplay('voidenergy', new Decimal(voidenergy).ceil().toString());
 
   if (isNodesPageLoaded) {
-    updateDisplay('VEPT', Math.ceil(calculateVEPT()));
+    updateDisplay('VEPT', Math.ceil(calculatePassiveVEPT()));
 
     for (const node of window.nodesData) {
       updateDisplay(node.id, new Decimal(node.count).floor().toString());
+      updateDisplay(`${node.id}Cost`, formatNumber(getNodePurchaseCost(node).ceil()));
       updateDisplay(`${node.id}Production`, `Production: ${formatNumber(getNodeProduction(node))}`);
     }
   } else if (typeof updateHomeDynamic === 'function') {
@@ -507,7 +518,7 @@ function updateTickProgress() {
 
 // === Idle Generation ===
 function generateResourcesPerTick() {
-  const gained = calculateVEPT();
+  const gained = calculatePassiveVEPT();
 
   voidenergy = Math.ceil(voidenergy + gained);
   lifetimeVE = lifetimeVE.plus(gained);
@@ -558,6 +569,7 @@ function saveGame() {
     lifetimeVE: lifetimeVE.toString(),
     prestige,
     totalClicks: window.totalClicks || 0,
+    relics: serializeRelics(),
     tickSpeedReduction:     window.tickSpeedReduction     || 0,
     clickUpgradeMultiplier: window.clickUpgradeMultiplier || 1,
     achievementProdBonus:   window.achievementProdBonus   || 0,
@@ -659,6 +671,7 @@ function loadGame() {
     });
   }
 
+  restoreRelics(data.relics);
   invalidateProduction();
   refreshNodeStats();
 }
@@ -717,7 +730,7 @@ async function changePage(page) {
       const footer = document.createElement('footer');
       footer.id = 'game-footer';
       footer.className = 'game-footer';
-      footer.innerHTML = `<span>&copy; ${new Date().getFullYear()} VoidByte Studio</span><span>v0.0.7</span>`;
+      footer.innerHTML = `<span>&copy; ${new Date().getFullYear()} VoidByte Studio</span><span>v0.0.8</span>`;
       document.body.appendChild(footer);
     }
   } catch (error) {
@@ -1122,6 +1135,7 @@ window.onload = () => {
     });
 
     if (!isNew) loadGame();
+    else restoreRelics(null);
     changePage(goToPage || 'home');
 
     // Remove title screen from DOM after transition

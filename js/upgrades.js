@@ -269,6 +269,7 @@ function loadUpgradesPage(content) {
 
         upg.purchased = true;
         invalidateProduction();
+        checkRelicProgress();
         refreshNodeStats();
         if (typeof updateHomeDynamic === 'function') updateHomeDynamic();
         try { if (typeof tryUnlockAchievements === 'function') tryUnlockAchievements(); } catch (err) { console.error('[Achievement error]', err); }

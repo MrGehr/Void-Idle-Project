@@ -1,7 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(find \"c:\\\\Users\\\\seang\\\\Downloads\\\\Void-Idle-Project-main \\(1\\)\\\\Void-Idle-Project-main\" -type f -name \"*.js\" -o -name \"*.jsx\" -o -name \"*.ts\" -o -name \"*.tsx\")"
-    ]
-  }
-}

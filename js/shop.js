@@ -14,7 +14,7 @@ const SHOP_SECTIONS = [
     id:   'relics',
     label: 'Relics',
     icon:  'relic',
-    desc:  'Ancient relics that bestow permanent passive abilities across all resets.',
+    desc:  'Ancient relics that awaken through milestones and shape your playstyle.',
   },
   {
     id:   'cosmetics',
@@ -43,6 +43,7 @@ function loadShopPage(content) {
   setPageUpdater(() => {
     const tab = document.getElementById('shop-tab');
     if (!tab) return;
+    if (window.shopActivePage === 'relics') { updateRelicCollection(); return; }
     const equippedOrb = (window.orbsData || []).find(o => o.id === window.equippedOrbId);
     tab.querySelectorAll('.orb-combo-hint').forEach(el => {
       if (!equippedOrb) return;
@@ -79,6 +80,7 @@ function renderShopPage(content) {
 
   const bodyHTML = active === 'orbs'
     ? renderOrbsSubPage()
+    : active === 'relics' ? renderRelicsSubPage()
     : renderPlaceholderSubPage(SHOP_SECTIONS.find(s => s.id === active));
 
   content.innerHTML = `
@@ -90,6 +92,8 @@ function renderShopPage(content) {
       </div>
     </div>
   `;
+
+  wireRelicCollection(content);
 
   // Tab navigation
   content.querySelectorAll('.shop-tab').forEach(btn => {
@@ -110,6 +114,7 @@ function renderShopPage(content) {
       voidenergy -= orb.cost;
       orb.owned = true;
       invalidateProduction();
+      checkRelicProgress();
       applyEquippedOrb(orb.id);
       updateDisplay('voidenergy', voidenergy);
       try { if (typeof tryUnlockAchievements === 'function') tryUnlockAchievements(); } catch (err) { console.error('[Achievement error]', err); }

@@ -4,6 +4,29 @@
 if (typeof window.changelogEntries === 'undefined') {
   window.changelogEntries = [
     {
+      version: "v0.0.8",
+      date: "2026-09-07",
+      summary: "Relics: discover, awaken, and build your loadout",
+      highlights: [
+        "Five milestone-earned relics with five ranks each",
+        "One equipment slot to start; unlock more with Void Bloom and Oblivion Spire",
+        "Specialize in production, manual echoes, node discounts, idle income, or critical hits",
+        "Existing saves discover relics for milestones already reached",
+      ],
+      sections: [
+        { tag: 'Added', notes: [
+          "Shop → Relics: equipment slots, collection, full awakening paths, and live effect status",
+          "Seed of the Abyss, Echo Shard, Architect’s Seal, Stillness Stone, and Fractured Crown",
+          "Relic discovery and awakening notices, a Home shortcut, and relic bonuses in Stats",
+        ] },
+        { tag: 'Balance', notes: [
+          "Only equipped relics grant bonuses; awakenings and unlocked slots stay earned",
+          "Stillness activates after 30 seconds without manual clicks; auto-clicks do not interrupt it",
+          "Echo and critical-hit bonuses carry fractional energy forward without rounding every bonus up",
+        ] },
+      ],
+    },
+    {
       version: "v0.0.7",
       date:    "2026-03-19",
       summary: "Title screen, tutorial, economy rebalance, and quality-of-life improvements",
@@ -254,6 +277,7 @@ function loadHomePage(content) {
         <!-- Active Bonuses -->
         <div class="home-card">
           <div class="home-card-hdr">${gi('orb')} Active Bonuses</div>
+          <p class="home-relic-summary"><span id="homeRelics"></span> <button class="page-btn" onclick="window.shopActivePage='relics'; changePage('shop')">Relics</button></p>
           <ul class="home-kv-list">
             <li><span>Equipped Orb</span><strong id="homeActivOrbName" style="font-size:0.8rem">—</strong></li>
             <li><span>Passive</span><strong id="homeActivePassive" style="color:var(--accent);font-size:0.78rem;text-align:right;max-width:60%">—</strong></li>
@@ -430,12 +454,14 @@ function renderHomeDynamic() {
   const gained    = lifetimeVE.minus(currentVE).clamp(0, nextVE.minus(currentVE));
   const progress  = gained.dividedBy(nextVE.minus(currentVE)).times(100).clamp(0, 100);
 
-  const vept       = calculateVEPT();
+  const vept       = calculatePassiveVEPT();
   const totalNodes = window.nodesData.reduce((sum, n) => sum + n.count, 0);
   const unlocked   = window.achievementsData.filter(a => a.unlocked);
   const tickSec    = getTickInterval() / 1000;
   const clickMult  = window.clickUpgradeMultiplier || 1;
   const equippedOrb = (window.orbsData || []).find(o => o.id === window.equippedOrbId);
+
+  setText(el('homeRelics'), relicSummary());
 
   // ── Hero
   if (el('voidenergy')) setText(el('voidenergy'), formatNumber(voidenergy));
@@ -518,7 +544,7 @@ function renderHomeDynamic() {
 
   // ── Next Goals strip
   const cheapestNode    = window.nodesData.reduce((min, n) => (!min || n.cost.lt(min.cost)) ? n : min, null);
-  const nodeAffordable  = cheapestNode && balance.gte(cheapestNode.cost);
+  const nodeAffordable  = cheapestNode && balance.gte(getNodePurchaseCost(cheapestNode));
   const unownedOrbs     = (window.orbsData || []).filter(o => !o.owned);
   const nextOrb         = unownedOrbs.reduce((min, o) => (!min || o.cost < min.cost) ? o : min, null);
   const orbAffordable   = nextOrb && voidenergy >= nextOrb.cost;
@@ -530,7 +556,7 @@ function renderHomeDynamic() {
   }
   if (el('goalNodeName')) setText(el('goalNodeName'), cheapestNode ? cheapestNode.name : '—');
   if (el('goalNodeCost')) {
-    setText(el('goalNodeCost'), cheapestNode ? (nodeAffordable ? '✓ Ready to buy' : formatNumber(cheapestNode.cost.ceil()) + ' VE') : '');
+    setText(el('goalNodeCost'), cheapestNode ? (nodeAffordable ? '✓ Ready to buy' : formatNumber(getNodePurchaseCost(cheapestNode).ceil()) + ' VE') : '');
     el('goalNodeCost').className   = 'home-goal-cost' + (nodeAffordable ? ' is-ready' : '');
   }
   if (el('goalOrbName')) setText(el('goalOrbName'), nextOrb ? nextOrb.name : 'All owned');
@@ -611,6 +637,15 @@ function spawnOrbClick(e, reward = 1, hitFlags = {}) {
     sp.style.cssText = `left:${e.clientX + 80}px; top:${e.clientY + specialOffset}px; --drift:${drift}px; color:#7fff00; text-shadow: 0 0 8px rgba(127,255,0,0.9); font-weight:600; font-size:0.78em;`;
     document.body.appendChild(sp);
     sp.addEventListener('animationend', () => sp.remove(), { once: true });
+  }
+
+  if (hitFlags.isEcho && hitFlags.echoReward > 0) {
+    const echo = document.createElement('div');
+    echo.className = 'click-particle click-special-particle';
+    echo.textContent = `ECHO +${formatNumber(hitFlags.echoReward)}`;
+    echo.style.cssText = `left:${e.clientX - 80}px; top:${e.clientY}px; --drift:${drift}px; color:#66fffa; font-size:0.85em;`;
+    document.body.appendChild(echo);
+    echo.addEventListener('animationend', () => echo.remove(), { once: true });
   }
 
   // 3. Void energy burst — 12 glowing dots from the orb center

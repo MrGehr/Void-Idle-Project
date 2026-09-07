@@ -166,7 +166,18 @@ function renderBonusCards() {
             }
         </section>`;
 
-    return passiveCard + activeCard;
+    const relicCard = `<section class="page-card">
+      <div class="page-card-hdr">${gi('relic', 16)} Equipped Relics</div>
+      <p class="stats-equipped-label">${relicSummary()}</p>
+      <ul class="page-kv-list">
+        <li><span>Production</span><strong>+${relicPercent(relicModifiers.production)}</strong></li>
+        <li><span>Node discount</span><strong>${relicPercent(relicModifiers.discount)}</strong></li>
+        <li><span>Echo / 10 manual clicks</span><strong>${relicPercent(relicModifiers.echo)} of ordinary click</strong></li>
+        <li><span>Critical-hit energy</span><strong>+${relicPercent(relicModifiers.critical)}</strong></li>
+        <li><span>Stillness (passive only)</span><strong>+${relicPercent(getRelicIdleBonus())}${relicModifiers.idle && !getRelicIdleBonus() ? ' · gathering' : ''}</strong></li>
+      </ul>
+    </section>`;
+    return passiveCard + activeCard + relicCard;
 }
 
 function updateStatsPage() {
@@ -183,8 +194,8 @@ function updateStatsPage() {
 
     // Resource Stats
     totalVEEl.textContent     = formatNumber(lifetimeVE);
-    currentVEPTEl.textContent = formatNumber(calculateVEPT());
-    const veps = calculateVEPT() / (getTickInterval() / 1000);
+    currentVEPTEl.textContent = formatNumber(calculatePassiveVEPT());
+    const veps = calculatePassiveVEPT() / (getTickInterval() / 1000);
     currentVEPSEl.textContent = veps < 100 ? veps.toFixed(2) : formatNumber(veps);
 
     // Bonus cards (passive + active)
